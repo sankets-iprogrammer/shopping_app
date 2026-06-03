@@ -20,9 +20,10 @@ class LightTheme {
   static Color disabledOnBackgroundColor =Color(0xFF939393);
   static Color discountCardOnBackgroundColor =Color(0xFF000000);
   static Color navigationTextColor= Color(0xFF0857a0);
+  static Color errorTextColor= Color(0xfff9848c);
 
 
-  static double pageHorizontalMargin =35;
+  static double pageHorizontalMargin =25;
   static double pageVerticalMargin =25;
 
   static TextStyle pageTitle =GoogleFonts.nunito(
