@@ -1,3 +1,5 @@
+import 'package:shopping_app/core/services/storage_services/realm_storage/realm_data_models/realm_model.dart';
+
 class Dimensions {
   double? width;
   double? height;
@@ -5,10 +7,13 @@ class Dimensions {
 
   Dimensions({this.width, this.height, this.depth});
 
-  Dimensions.fromJson(Map<String, dynamic> json) {
-    width = json['width'];
-    height = json['height'];
-    depth = json['depth'];
+  factory Dimensions.fromJson(Map<String, dynamic> json) {
+    return Dimensions(
+        width : json['width'],
+        height : json['height'],
+        depth : json['depth'],
+    );
+
   }
 
   Map<String, dynamic> toJson() {
@@ -17,5 +22,13 @@ class Dimensions {
     data['height'] = height;
     data['depth'] = depth;
     return data;
+  }
+
+  RealmDimensionModel toRealm(){
+   return RealmDimensionModel(
+      width: width,
+      height: height,
+      depth: depth
+    );
   }
 }

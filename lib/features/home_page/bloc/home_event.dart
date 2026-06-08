@@ -11,3 +11,8 @@ class ChangeProductCartCountEvent extends HomeEvent{
   final bool desc;
   ChangeProductCartCountEvent({required this.id,this.desc=false});
 }
+
+class LoadProductDataEvent extends HomeEvent{
+  final int id;
+  LoadProductDataEvent({required this.id});
+}

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_app/core/network_project/api_client.dart';
+import 'package:shopping_app/core/services/storage_services/token_storage.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_bloc.dart';
+import 'package:shopping_app/features/authentication/data/auth_api.dart';
+import 'package:shopping_app/features/authentication/data/auth_repository.dart';
 import 'package:shopping_app/features/authentication/screens/login_screen.dart';
 import 'package:shopping_app/features/authentication/screens/register_screen.dart';
 import 'package:shopping_app/features/home_page/bloc/home_bloc.dart';
@@ -14,10 +18,12 @@ import 'features/main_screen/screens/main_screen.dart';
 
 
 void main() {
+  TokenStorage tokenStorage =TokenStorage();
+  ApiClient apiClient= ApiClient();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(create: (_) => AppStartBloc()),
-      BlocProvider(create: (_) => AuthBloc()),
+      BlocProvider(create: (_) => AuthBloc(AuthRepository(api: AuthApi(apiClient.dio),storage: tokenStorage))),
       BlocProvider(create: (_) => HomeBloc())
     ],
     child: MyApp(),
@@ -33,7 +39,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: ProductScreen(),
+      home: LoginScreen(),
     );
   }
 }

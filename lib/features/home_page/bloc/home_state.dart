@@ -1,11 +1,11 @@
 import 'package:shopping_app/features/home_page/model/product_model.dart';
 
 class HomeState {
-  final bool isProductLoading;
-  final bool isCategoryLoading;
+  final bool isProductListLoading;
+  final bool isCategoryListLoading;
   final bool isBannerLoading;
-  final bool isProductLoadingFailed;
-  final bool isCategoryLoadingFailed;
+  final bool isProductListLoadingFailed;
+  final bool isCategoryListLoadingFailed;
   final bool isBannerLoadingFailed;
   final int? skip;
   final String username;
@@ -15,15 +15,19 @@ class HomeState {
   final String? errorMessage;
   final List<int> favoriteProductIds;
   final Map<int,int> productCartCount;
+  final ProductModel? currentProduct;
+  final bool isCurrentProductDataLoading;
   // final List<>
 
   const HomeState({
+    this.currentProduct,
+    required this.isCurrentProductDataLoading,
     required this.isBannerLoadingFailed,
-    required this.isProductLoadingFailed,
-    required this.isCategoryLoadingFailed,
+    required this.isProductListLoadingFailed,
+    required this.isCategoryListLoadingFailed,
     required this.isBannerLoading,
-    required this.isCategoryLoading,
-    required this.isProductLoading,
+    required this.isCategoryListLoading,
+    required this.isProductListLoading,
     required this.username,
     required this.bannerImages,
     required this.categories,
@@ -36,28 +40,31 @@ class HomeState {
 
   factory HomeState.initial() {
     return const HomeState(
-      isProductLoadingFailed: false,
+      isCurrentProductDataLoading:false,
+      isProductListLoadingFailed: false,
       isBannerLoadingFailed: false,
-      isCategoryLoadingFailed: false,
-      isCategoryLoading: false,
+      isCategoryListLoadingFailed: false,
+      isCategoryListLoading: false,
       isBannerLoading: false,
-      isProductLoading: false,
+      isProductListLoading: false,
       skip:0,
       username: "",
       bannerImages: [],
       categories: [],
       products: [],
+
       favoriteProductIds: [1,4],
       productCartCount: {},
     );
   }
 
   HomeState copyWith({
-    bool? isCategoryLoadingFailed,
+    bool? isCurrentProductDataLoading,
+    bool? isCategoryListLoadingFailed,
     bool? isBannerLoadingFailed,
-    bool? isProductLoadingFailed,
-    bool? isCategoryLoading,
-    bool? isProductLoading,
+    bool? isProductListLoadingFailed,
+    bool? isCategoryListLoading,
+    bool? isProductListLoading,
     bool? isBannerLoading,
     String? username,
     List<String>? bannerImages,
@@ -66,22 +73,25 @@ class HomeState {
     List<int>? favoriteProductIds,
     Map<int,int>? productCartCount,
     String? errorMessage,
+    ProductModel? currentProduct,
     int? skip
   }) {
     return HomeState(
-      isCategoryLoadingFailed: isCategoryLoadingFailed?? this.isCategoryLoadingFailed,
+        isCurrentProductDataLoading:isCurrentProductDataLoading??this.isCurrentProductDataLoading,
+        isCategoryListLoadingFailed: isCategoryListLoadingFailed?? this.isCategoryListLoadingFailed,
         isBannerLoadingFailed: isBannerLoadingFailed?? this.isBannerLoadingFailed,
-        isProductLoadingFailed: isProductLoadingFailed?? this.isProductLoadingFailed,
-      isProductLoading: isProductLoading ?? this.isProductLoading,
+        isProductListLoadingFailed: isProductListLoadingFailed?? this.isProductListLoadingFailed,
+        isProductListLoading: isProductListLoading ?? this.isProductListLoading,
       isBannerLoading: isBannerLoading ?? this.isBannerLoading,
-      isCategoryLoading: isCategoryLoading ?? this.isCategoryLoading,
+      isCategoryListLoading: isCategoryListLoading ?? this.isCategoryListLoading,
       username: username ?? this.username,
       bannerImages: bannerImages ?? this.bannerImages,
       categories: categories ?? this.categories,
       products: products ?? this.products,
       errorMessage: errorMessage,
-      favoriteProductIds: favoriteProductIds??this.favoriteProductIds,
-      productCartCount: productCartCount ??this.productCartCount,
+      favoriteProductIds: favoriteProductIds ?? this.favoriteProductIds,
+      productCartCount: productCartCount ?? this.productCartCount,
+      currentProduct: currentProduct ?? this.currentProduct,
       skip: this.skip
     );
   }

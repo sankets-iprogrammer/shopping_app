@@ -2,13 +2,17 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_event.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_state.dart';
-import 'package:shopping_app/network/api_call.dart';
-import 'package:shopping_app/network/api_exception.dart';
+import 'package:shopping_app/features/authentication/data/auth_repository.dart';
+
+import '../../../network/api_exception.dart';
+
 
 class AuthBloc extends Bloc<AuthEvent,AuthState>{
-  AuthBloc():super(AuthInitial()){
+  final AuthRepository repository;
+  AuthBloc(this.repository):super(AuthInitial()){
     on<LoginEvent>(_login);
     on<SignupEvent>(_signup);
   }
@@ -19,12 +23,29 @@ class AuthBloc extends Bloc<AuthEvent,AuthState>{
       ) async{
     emit(AuthLoading());
     try{
-      await ApiCall.login(event.loginRequest);
-      emit(LoginSuccess());
+      await repository.login(event.loginRequest);
 
-    }on ApiException catch (e){
-      log(e.toString());
-      emit(AuthError(e.message));
+
+      // final results=await Future.wait([
+      // ApiCalls.getCurrentUser(),
+      // ApiCalls.getCurrentUser(),
+      // ApiCalls.getCurrentUser(),
+      // ApiCalls.getCurrentUser(),
+      // ]);
+      //
+      // for(final result in results){
+      //   log("this is api response data got for original call");
+      //   log(result.toString());
+      // }
+
+
+      emit(LoginSuccess());
+    }on DioException catch(e){
+      if(e.error is ApiException){
+        emit(AuthError((e.error as ApiException).message));
+      }else{
+        emit(AuthError(e.message??"Unknown Error"));
+      }
     }catch(e){
       emit(AuthError("Unknown Error"));
     }

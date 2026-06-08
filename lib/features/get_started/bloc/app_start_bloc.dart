@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/services/storage_services/shared_preferences_service.dart';
-
+import '../../../core/services/storage_services/shared_preferences_service.dart';
 import 'app_start_event.dart';
 import 'app_start_state.dart';
 

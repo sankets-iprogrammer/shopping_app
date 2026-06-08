@@ -1,3 +1,4 @@
+import 'package:shopping_app/core/services/storage_services/realm_storage/realm_data_models/realm_model.dart';
 import 'package:shopping_app/features/home_page/model/review_model.dart';
 
 import 'dimension_model.dart';
@@ -61,7 +62,7 @@ factory ProductModel.fromJson(Map<String, dynamic> json) {
   discountPercentage : json['discountPercentage'],
   rating :json['rating'],
   stock : json['stock'],
-  tags : json['tags'],
+  tags : json['tags']?.cast<String>(),
   brand : json['brand'],
   sku : json['sku'],
   weight : json['weight'],
@@ -75,10 +76,9 @@ factory ProductModel.fromJson(Map<String, dynamic> json) {
       minimumOrderQuantity : json['minimumOrderQuantity'],
       meta : json['meta'] != null ?  Meta.fromJson(json['meta']) : null,
   thumbnail : json['thumbnail'],
-  images : json['images'].cast<String>(),
-  reviews: json['reviews']?.map((v) {return Reviews.fromJson(v);} as List<Reviews>)
+  images : json['images']?.cast<String>(),
+  reviews: json['reviews']?.map((v){return Reviews.fromJson(v);}).toList().cast<Reviews>()
   );
-
 }
 
 Map<String, dynamic> toJson() {
@@ -113,4 +113,34 @@ Map<String, dynamic> toJson() {
   data['images'] = images;
   return data;
 }
+
+RealmProductModel toRealm(){
+  return RealmProductModel(
+    id,
+      title : title,
+      description : description,
+      category :category,
+      price : price,
+      discountPercentage : discountPercentage,
+      rating :rating,
+      stock : stock,
+      tags : tags?? const[],
+      brand : brand,
+      sku : sku,
+      weight : weight,
+      dimensions : dimensions?.toRealm(),
+      warrantyInformation : warrantyInformation,
+      shippingInformation :shippingInformation,
+      availabilityStatus : availabilityStatus,
+      returnPolicy : returnPolicy,
+      minimumOrderQuantity : minimumOrderQuantity,
+      meta : meta?.toRealm(),
+      thumbnail : thumbnail,
+      images : images??const[],
+      reviews: reviews==null?const []: reviews!.map((v){return v.toRealm();}).toList().cast<RealmReviewModel>()
+
+  );
 }
+}
+
+

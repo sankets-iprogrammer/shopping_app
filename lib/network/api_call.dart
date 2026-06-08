@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:shopping_app/features/authentication/model/login_request.dart';
 import 'package:shopping_app/features/home_page/model/product_model.dart';
-import 'package:shopping_app/network/api_base_url.dart';
-import 'package:shopping_app/network/api_end_points.dart';
+import 'package:shopping_app/core/network_project/api_base_url.dart';
+import 'package:shopping_app/core/network_project/api_end_points.dart';
 import 'package:shopping_app/network/api_exception.dart';
 
 
@@ -73,6 +73,7 @@ class ApiCall {
           throw ApiException("Unknown Error");
       }
     }catch(e){
+      log(e.toString());
       throw ApiException("Unknown Error");
     }
   }
@@ -99,6 +100,33 @@ class ApiCall {
           throw ApiException("Unknown Error");
       }
     }catch(e){
+      throw ApiException("Unknown Error");
+    }
+  }
+
+  static Future<ProductModel> getProductData(int id)async{
+    try {
+      final response = await dio.get(
+        ApiBaseUrl.baseUrl + ApiEndPoints.getProductsData + "/$id",
+      );
+      log(response.data.toString());
+      return ProductModel.fromJson(response.data as Map<String, dynamic>);
+    }on DioException catch (e){
+      switch (e.response?.statusCode) {
+        case 400:
+          log('Bad Request');
+          throw ApiException("Bad Request");
+        case 401:
+          log('Invalid Credentials');
+          throw ApiException("Invalid Credentials");
+        case 500:
+          log('Server Error');
+          throw ApiException("Server Error");
+        default:
+          throw ApiException("Unknown Error ${e.response?.statusCode}");
+      }
+    }catch(e){
+      log(e.toString());
       throw ApiException("Unknown Error");
     }
   }

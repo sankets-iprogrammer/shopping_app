@@ -1,3 +1,5 @@
+import 'package:shopping_app/core/services/storage_services/realm_storage/realm_data_models/realm_model.dart';
+
 class Reviews {
   int? rating;
   String? comment;
@@ -12,12 +14,15 @@ class Reviews {
         this.reviewerName,
         this.reviewerEmail});
 
-  Reviews.fromJson(Map<String, dynamic> json) {
-    rating = json['rating'];
-    comment = json['comment'];
-    date = json['date'];
-    reviewerName = json['reviewerName'];
-    reviewerEmail = json['reviewerEmail'];
+  factory Reviews.fromJson(Map<String, dynamic> json) {
+    return Reviews(
+        rating : json['rating'],
+        comment : json['comment'],
+        date : json['date'],
+    reviewerName : json['reviewerName'],
+    reviewerEmail : json['reviewerEmail']
+    );
+
   }
 
   Map<String, dynamic> toJson() {
@@ -28,5 +33,15 @@ class Reviews {
     data['reviewerName'] = this.reviewerName;
     data['reviewerEmail'] = this.reviewerEmail;
     return data;
+  }
+
+  RealmReviewModel toRealm(){
+    return RealmReviewModel(
+        rating : rating,
+        comment : comment,
+        date : date,
+        reviewerName : reviewerName,
+        reviewerEmail : reviewerEmail
+    );
   }
 }

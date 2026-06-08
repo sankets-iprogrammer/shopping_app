@@ -21,6 +21,8 @@ class LightTheme {
   static Color discountCardOnBackgroundColor =Color(0xFF000000);
   static Color navigationTextColor= Color(0xFF0857a0);
   static Color errorTextColor= Color(0xfff9848c);
+  static Color starColor= Color(0xFFFFD700);
+  static Color specBorderColor=Color(0xFFC3C6D5);
 
 
   static double pageHorizontalMargin =25;
@@ -79,11 +81,28 @@ class LightTheme {
     fontWeight: FontWeight(700),
     color: primaryCardOnBackgroundColor,
   );
+
   static TextStyle cardDiscountStyle =GoogleFonts.nunito(
     fontSize:10,
     fontWeight: FontWeight(400),
     color: discountCardOnBackgroundColor,
   );
+  static TextStyle productBasePriceStyle =cardCompanyNameStyle.copyWith(fontSize: 20,decoration: TextDecoration.lineThrough, decorationColor:descTextColor,decorationThickness: 2);
+  static TextStyle productCurrentPriceStyle =cardPriceStyle.copyWith(fontSize: 24);
+  static TextStyle productNameStyle =GoogleFonts.nunito(
+    fontSize:20,
+    fontWeight: FontWeight(700),
+    color: primaryOnBackgroundColor,
+  );
+  static TextStyle productStockStyle =GoogleFonts.nunito(
+    fontSize:15,
+    fontWeight: FontWeight(300),
+    color: primaryOnBackgroundColor,
+  );
+  static TextStyle productSectionTitle =sectionTitle.copyWith(fontSize: 19);
+  static TextStyle productDesc =productStockStyle.copyWith(fontWeight:FontWeight(400));
+
+
 
 
   static InputBorder textFieldBorder =OutlineInputBorder(borderSide: BorderSide(width: 1,color: descTextColor),borderRadius: BorderRadius.circular(10  ));

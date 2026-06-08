@@ -9,6 +9,7 @@ import 'package:shopping_app/core/helpers/custom_shimmer.dart';
 import 'package:shopping_app/core/helpers/custom_snackbar.dart';
 import 'package:shopping_app/features/home_page/bloc/home_event.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
+import 'package:shopping_app/features/home_page/components/product_card.dart';
 
 import '../../../core/themes/light_theme.dart';
 import '../../../core/widgets/buttons.dart';
@@ -151,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                               ),
-                              state.isCategoryLoadingFailed?Padding(
+                              state.isCategoryListLoadingFailed?Padding(
                                 padding: const EdgeInsets.only(top:10,bottom: 20,left: 20),
                                 child: Text("Failed To Load Categories",
                                   style: LightTheme
@@ -164,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 85,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: state.isCategoryLoading
+                                  itemCount: state.isCategoryListLoading
                                       ? 10:state.categories.length,
                                   itemBuilder: (context, index) {
                                     return Padding(
@@ -179,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                state.isCategoryLoading
+                                                state.isCategoryListLoading
                                                     ? CustomShimmer.getShimmerContainer(
                                                     height: 55,
                                                     width: 55,
@@ -201,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  state.isCategoryLoading?"category":state.categories[index],
+                                                  state.isCategoryListLoading?"category":state.categories[index],
                                                   style: LightTheme
                                                       .categoryCardTitleStyle,
                                                 ),
@@ -327,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       currentIndex,
                       contents.length,
                     ),
-                    state.isProductLoadingFailed?
+                    state.isProductListLoadingFailed?
                     Padding(
                       padding: const EdgeInsets.only(top:40),
                       child: Center(child: Text("Failed To Load Products",style: LightTheme.cardCompanyNameStyle.copyWith(color: LightTheme.errorTextColor),),),
@@ -336,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     GridView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount:state.isProductLoading?4:
+                      itemCount:state.isProductListLoading?4:
                       state.products.length,
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                         childAspectRatio: 0.68,
@@ -346,195 +347,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       itemBuilder: (context, index) {
 
-                        if(state.isProductLoading){
+                        if(state.isProductListLoading){
                           return CustomShimmer.getShimmerProductCard(
                           );
                         }
                         final ProductModel product = state.products[index];
-                          return Stack(
-                          children: [
-                            LayoutBuilder(
-                              builder: (context, constraints) {
-                                double width = constraints.maxWidth;
-                                return Container(
-                                  padding: EdgeInsets.all(7),
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        LightTheme.primaryCardBackgroundColor,
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: width,
-                                        height: width,
-                                        decoration: BoxDecoration(
-                                          color:
-                                              LightTheme.primaryBackgroundColor,
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: product.images == null
-                                            ? Image.asset(
-                                                "assets/product/iphone.png",
-                                              )
-                                            : Image.network(product.images![0]),
-                                      ),
-                                      SizedBox(height: width * 0.02),
-                                      Text(
-                                        product.title ?? "Product Name",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: LightTheme.cardProductNameStyle,
-                                      ),
-                                      Text(
-                                        product.brand ?? "",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: LightTheme.cardCompanyNameStyle,
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        "\$${product.price ?? "----"}",
-                                        style: LightTheme.cardPriceStyle,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: GestureDetector(
-                                child: Container(
-                                  padding: EdgeInsets.all(width * 0.012),
-                                  // width: width * 0.075,
-                                  // height: width * 0.075,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        LightTheme.primaryCardOnBackgroundColor,
-                                    borderRadius: BorderRadius.only(
-                                      bottomRight: Radius.circular(16),
-                                      topLeft: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      state.productCartCount.containsKey(
-                                            product.id,
-                                          )
-                                          ? Row(
-                                              children: [
-                                                InkWell(
-                                                  onTap: () {
-                                                    context.read<HomeBloc>().add(
-                                                      ChangeProductCartCountEvent(
-                                                        id: product.id,
-                                                        desc: true,
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Icon(
-                                                    Icons.remove,
-                                                    color: LightTheme
-                                                        .primaryCardBackgroundColor,
-                                                    size: 23,
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                      ),
-                                                  child: Text(
-                                                    state
-                                                        .productCartCount[product
-                                                            .id]
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight(
-                                                        800,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : SizedBox(),
-                                      InkWell(
-                                        onTap: () {
-                                          context.read<HomeBloc>().add(
-                                            ChangeProductCartCountEvent(
-                                              id: product.id,
-                                            ),
-                                          );
-                                        },
-                                        child: Icon(
-                                          Icons.add,
-                                          color: LightTheme
-                                              .primaryCardBackgroundColor,
-                                          size: 23,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 7 + width * 0.02,
-                              top: 7 + width * 0.02,
-                              child: Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  color: LightTheme.discountCardBackgroundColor,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  product.discountPercentage == null
-                                      ? ""
-                                      : "${product.discountPercentage}%",
-                                  style: LightTheme.cardDiscountStyle,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 7 + width * 0.01,
-                              top: 7 + width * 0.01,
-                              child: InkWell(
-                                onTap: () {
-                                  context.read<HomeBloc>().add(
-                                    ToggleFavoriteIDEvent(id: product.id),
-                                  );
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(3),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        LightTheme.primaryCardBackgroundColor,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child:
-                                      state.favoriteProductIds.contains(
-                                        product.id,
-                                      )
-                                      ? Icon(
-                                          Icons.favorite,
-                                          size: 20,
-                                          color: Colors.red,
-                                        )
-                                      : Icon(Icons.favorite_outline, size: 20),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
+                         return ProductCard(product: product,state: state,);
                       },
                     ),
                   ],
