@@ -27,11 +27,11 @@ class Reviews {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['rating'] = this.rating;
-    data['comment'] = this.comment;
-    data['date'] = this.date;
-    data['reviewerName'] = this.reviewerName;
-    data['reviewerEmail'] = this.reviewerEmail;
+    data['rating'] = rating;
+    data['comment'] = comment;
+    data['date'] = date;
+    data['reviewerName'] = reviewerName;
+    data['reviewerEmail'] = reviewerEmail;
     return data;
   }
 
@@ -42,6 +42,16 @@ class Reviews {
         date : date,
         reviewerName : reviewerName,
         reviewerEmail : reviewerEmail
+    );
+  }
+
+  factory Reviews.fromRealmReview(RealmReviewModel realmReview){
+    return Reviews(
+        rating : realmReview.rating,
+        comment : realmReview.comment,
+        date : realmReview.date,
+        reviewerName : realmReview.reviewerName,
+        reviewerEmail : realmReview.reviewerEmail
     );
   }
 }

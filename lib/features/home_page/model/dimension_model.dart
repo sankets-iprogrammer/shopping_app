@@ -17,7 +17,7 @@ class Dimensions {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = {};
     data['width'] = width;
     data['height'] = height;
     data['depth'] = depth;
@@ -29,6 +29,13 @@ class Dimensions {
       width: width,
       height: height,
       depth: depth
+    );
+  }
+  factory Dimensions.fromRealmDimension(RealmDimensionModel? realmDimension){
+    return Dimensions(
+        width: realmDimension?.width,
+        height: realmDimension?.height,
+        depth: realmDimension?.depth
     );
   }
 }

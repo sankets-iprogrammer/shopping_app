@@ -14,3 +14,4 @@ class SharedPreferencesServices {
     prefs.setBool("isFirstTimeStart", false);
   }
 }
+

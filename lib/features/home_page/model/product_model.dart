@@ -141,6 +141,34 @@ RealmProductModel toRealm(){
 
   );
 }
+
+factory ProductModel.fromRealmProduct(RealmProductModel realmProduct){
+  return ProductModel(
+    id: realmProduct.id,
+      title : realmProduct.title,
+      description : realmProduct.description,
+      category :realmProduct.category,
+      price : realmProduct.price,
+      discountPercentage : realmProduct.discountPercentage,
+      rating :realmProduct.rating,
+      stock : realmProduct.stock,
+      tags : realmProduct.tags,
+      brand : realmProduct.brand,
+      sku : realmProduct.sku,
+      weight : realmProduct.weight,
+      dimensions : Dimensions.fromRealmDimension(realmProduct.dimensions),
+      warrantyInformation : realmProduct.warrantyInformation,
+      shippingInformation :realmProduct.shippingInformation,
+      availabilityStatus : realmProduct.availabilityStatus,
+      returnPolicy : realmProduct.returnPolicy,
+      minimumOrderQuantity : realmProduct.minimumOrderQuantity,
+      meta : Meta.fromRealmMeta(realmProduct.meta),
+      thumbnail : realmProduct.thumbnail,
+      images : realmProduct.images,
+      reviews: realmProduct.reviews.map((realmReview){ return Reviews.fromRealmReview(realmReview);}).toList().cast<Reviews>()
+
+  );
+}
 }
 
 

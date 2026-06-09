@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
@@ -50,7 +51,16 @@ class ProductCard extends StatelessWidget{
                               ? Image.asset(
                             "assets/product/iphone.png",
                           )
-                              : Image.network(product.images![0]),
+                              :CachedNetworkImage(
+                              imageUrl: product.images![0],
+                            placeholder: (context,url){
+                              return Icon(Icons.broken_image,size: 30,);
+                            },
+                            errorWidget: (context,url,error){
+                                return Icon(Icons.broken_image,size: 30,);
+                            },
+                          )
+                          // Image.network(product.images![0]),
                         ),
                         SizedBox(height: width * 0.02),
                         Text(

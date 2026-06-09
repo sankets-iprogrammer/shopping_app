@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:shopping_app/network/api_exception.dart';
+import 'package:shopping_app/core/network_project/api_exception.dart';
 
 class LoggerInterceptor extends Interceptor{
   Logger logger =Logger();

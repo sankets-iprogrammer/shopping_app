@@ -3,16 +3,15 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/network_project/api_calls.dart';
+import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_event.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_state.dart';
-import 'package:shopping_app/features/authentication/data/auth_repository.dart';
-
-import '../../../network/api_exception.dart';
+import 'package:shopping_app/features/authentication/model/login_response.dart';
+import '../../../core/network_project/api_exception.dart';
 
 
 class AuthBloc extends Bloc<AuthEvent,AuthState>{
-  final AuthRepository repository;
-  AuthBloc(this.repository):super(AuthInitial()){
+  AuthBloc():super(AuthInitial()){
     on<LoginEvent>(_login);
     on<SignupEvent>(_signup);
   }
@@ -23,8 +22,11 @@ class AuthBloc extends Bloc<AuthEvent,AuthState>{
       ) async{
     emit(AuthLoading());
     try{
-      await repository.login(event.loginRequest);
+      LoginResponse loginResponse= await ApiCalls.login(event.loginRequest);
+      await SecureStorage.addUserLoginData(loginResponse);
 
+
+      // ApiCalls.getCurrentUser();
 
       // final results=await Future.wait([
       // ApiCalls.getCurrentUser(),

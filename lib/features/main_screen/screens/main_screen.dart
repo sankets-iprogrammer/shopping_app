@@ -1,7 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/themes/light_theme.dart';
+import 'package:shopping_app/features/main_screen/bloc/main_screen_bloc.dart';
+import 'package:shopping_app/features/main_screen/bloc/main_screen_events.dart';
 import '../../home_page/screens/home_screen.dart';
+import '../../wishlist/screens/wishlist_screen.dart';
+import '../bloc/main_screen_state.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,29 +19,42 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: LightTheme.primaryBackgroundColor,
-      // appBar: myAppBar(),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: LightTheme.secondaryBackgroundColor,
-        unselectedItemColor: LightTheme.primaryOnBackgroundColor,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.store_outlined),
-            label: "Store",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_outline),
-            label: "WishList",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: "Profile",
-          ),
-        ],
-      ),
-      body: HomeScreen()
+    return BlocBuilder<MainScreenBloc, MainScreenState>(
+      builder: (context, state) {
+        return Scaffold(
+            backgroundColor: LightTheme.primaryBackgroundColor,
+            // appBar: myAppBar(),
+            bottomNavigationBar: BottomNavigationBar(
+              onTap: (index){
+                context.read<MainScreenBloc>().add(SetPageIndexEvent(index: index));
+              },
+              selectedItemColor: LightTheme.secondaryBackgroundColor,
+              unselectedItemColor: LightTheme.primaryOnBackgroundColor,
+              currentIndex: state.currentPageIndex,
+              items: [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.store_outlined),
+                  label: "Store",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite_outline),
+                  label: "WishList",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline),
+                  label: "Profile",
+                ),
+              ],
+            ),
+            body: switch(state.currentPageIndex){
+              0 => HomeScreen(),
+              2 => WishlistScreen(),
+              _ => HomeScreen()
+            }
+
+        );
+      },
     );
   }
 }

@@ -15,7 +15,6 @@ class ApiClient {
       )
     );
     dio.interceptors.add(AuthInterceptor());
-    // dio.interceptors.add(RefreshQueueIntercector());
     dio.interceptors.add(ErrorInterceptor());
     dio.interceptors.add(LoggerInterceptor());
   }

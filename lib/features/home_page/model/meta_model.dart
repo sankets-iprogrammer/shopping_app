@@ -1,3 +1,4 @@
+import 'package:realm/realm.dart';
 import 'package:shopping_app/core/services/storage_services/realm_storage/realm_data_models/realm_model.dart';
 
 class Meta {
@@ -18,11 +19,11 @@ class Meta {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
-    data['barcode'] = this.barcode;
-    data['qrCode'] = this.qrCode;
+    final Map<String, dynamic> data = {};
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['barcode'] = barcode;
+    data['qrCode'] = qrCode;
     return data;
   }
 
@@ -31,6 +32,16 @@ class Meta {
       createdAt : createdAt,
       updatedAt : updatedAt,
       barcode : barcode,
+      qrCode: qrCode,
+    );
+  }
+
+  factory Meta.fromRealmMeta(RealmMeta? realmMeta){
+    return Meta(
+      createdAt : realmMeta?.createdAt,
+      updatedAt : realmMeta?.updatedAt,
+      barcode : realmMeta?.barcode,
+      qrCode: realmMeta?.qrCode,
     );
   }
 }

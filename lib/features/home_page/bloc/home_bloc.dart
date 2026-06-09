@@ -1,11 +1,14 @@
 import 'dart:developer';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/core/services/storage_services/realm_storage/realm_storage.dart';
+import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
 import 'package:shopping_app/features/home_page/bloc/home_event.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
 import 'package:shopping_app/features/home_page/model/product_model.dart';
-import 'package:shopping_app/network/api_call.dart';
-import 'package:shopping_app/network/api_exception.dart';
+import 'package:shopping_app/core/network_project/api_exception.dart';
+import 'package:shopping_app/features/main_screen/model/user_data_model.dart';
 
 class HomeBloc extends Bloc<HomeEvent,HomeState>{
   HomeBloc():super(HomeState.initial()){
@@ -14,21 +17,35 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
     on<ToggleFavoriteIDEvent>(_toggleFavoriteID);
     on<ChangeProductCartCountEvent>(_changeProductCartCount);
     on<LoadProductDataEvent>(_loadProductData);
+    on<LoadUserDataEvent>(_loadUserData);
+    on<SearchProductEvent>(_searchProductEvent);
   }
   Future<void> _loadProductList(LoadProductListEvent event,emit)async{
     emit(state.copyWith(isProductListLoading: true,isBannerLoading: true));
     try{
-      List<ProductModel> products=await ApiCall.getAllProductsList(skip: 0);
+      List<ProductModel> products=await ApiCalls.getAllProductsList(skip: 0);
       log(products.toString());
       emit(state.copyWith(
         products: products,
         isProductListLoading: false,
-        isBannerLoading: false
+        isBannerLoading: false,
+        filteredProducts: event.skip==0?products :null
       ));
       RealmDBStorage.saveProducts(products);
       log("products saved");
-    } on ApiException catch(e){
-      emit(state.copyWith(errorMessage: e.message,isProductListLoadingFailed: true,isProductListLoading: false));
+    } on DioException catch(e){
+      if(e.type == DioExceptionType.connectionError){
+        List<ProductModel> products= RealmDBStorage.getProductList();
+        log("products from storage");
+        log(products.toString());
+        emit(state.copyWith(
+            products: products,
+            isProductListLoading: false,
+            isBannerLoading: false,
+            filteredProducts: event.skip==0?products :null
+        ));
+        emit(state.copyWith(errorMessage: "You're offline. Some information may not be up to date.",isProductListLoading: false));
+      }
     } catch(e){
       emit(state.copyWith(errorMessage: "Unknown Error - Failed to load products",isProductListLoadingFailed: true,isProductListLoading: false));
       log(e.toString());
@@ -37,7 +54,7 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
   Future<void> _loadCategoryList(LoadCategoryListEvent event,emit)async{
     emit(state.copyWith(isCategoryListLoading: true));
     try{
-      List<String> categoryList =await ApiCall.getCategoryList();
+      List<String> categoryList =await ApiCalls.getCategoryList();
       log(categoryList.toString());
       emit(state.copyWith(categories: categoryList,isCategoryListLoading: false));
 
@@ -78,7 +95,7 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
     log("in the _loadProductData");
     try{
       emit(state.copyWith(isCurrentProductDataLoading:true));
-      ProductModel product =await ApiCall.getProductData(event.id);
+      ProductModel product =await ApiCalls.getProductData(event.id);
       log(product.toString());
       emit(state.copyWith(currentProduct: product,isCurrentProductDataLoading:false));
     }
@@ -90,4 +107,28 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
       log(e.toString());
     }
   }
+
+  void _loadUserData(LoadUserDataEvent event,emit) async{
+    emit(state.copyWith(isUserDataLoading: true));
+    UserDataModel userData =await SecureStorage.getUserData();
+    emit(state.copyWith(isUserDataLoading: false,userData: userData));
+  }
+
+  void _searchProductEvent(SearchProductEvent event, emit){
+    List<ProductModel> filteredProduct= state.products.where((ProductModel product){
+     return (product.title?.toLowerCase().contains(event.searchText.toLowerCase()) ?? false) || (product.description?.toLowerCase().contains(event.searchText.toLowerCase()) ?? false) || (product.brand?.toLowerCase().contains(event.searchText.toLowerCase()) ?? false);
+    }).toList();
+    emit(state.copyWith(filteredProducts: filteredProduct,searchText: event.searchText));
+  }
+
 }
+
+
+
+
+
+
+
+
+
+

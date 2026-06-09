@@ -5,61 +5,59 @@ import 'package:shopping_app/core/network_project/api_base_url.dart';
 import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/core/network_project/api_end_points.dart';
 import 'package:shopping_app/core/network_project/interceptor/apiRequestModel.dart';
-import 'package:shopping_app/core/services/storage_services/token_storage.dart';
+import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
+import 'package:shopping_app/features/authentication/model/login_response.dart';
 
 class AuthInterceptor extends Interceptor {
-  static String accessToken = "";
-  static bool isRefreshing =false;
+  static bool isRefreshing = false;
   static List<String> authIndependentPaths = [
     ApiEndPoints.login,
     ApiEndPoints.authRefresh,
-    ApiBaseUrl.baseUrl + ApiEndPoints.authRefresh
+    ApiBaseUrl.baseUrl + ApiEndPoints.authRefresh,
   ];
-  static TokenStorage tokenStorage = TokenStorage();
-  static List<ApiRequestModel> requestQueue=[];
-
+  static List<ApiRequestModel> requestQueue = [];
 
   @override
-  void onRequest(RequestOptions options,
-      RequestInterceptorHandler handler) async {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     if (options.path.contains(ApiEndPoints.authRefresh)) {
-      if(!isRefreshing){
-        isRefreshing=true;
+      if (!isRefreshing) {
+        isRefreshing = true;
         Map<String, dynamic> data = {
-          'refreshToken': await tokenStorage.refreshToken() ?? "",
+          'refreshToken': await SecureStorage.refreshToken() ?? "",
           'expiresInMins': 30,
         };
         options.data = data;
         super.onRequest(options, handler);
       }
     } else if (!authIndependentPaths.contains(options.path)) {
-      // String? accessToken =await tokenStorage.getAccessToken();
-      if(isRefreshing){
+      String? accessToken = await SecureStorage.getAccessToken();
+      if (isRefreshing) {
         requestQueue.add(ApiRequestModel(handler: handler, options: options));
-      }else{
-        options.headers.addAll({'Authorization': 'Bearer $accessToken'});
+      } else {
+        options.headers.addAll({'Authorization': 'Bearer $accessToken j'});
         super.onRequest(options, handler);
       }
-    }else{
+    } else {
       super.onRequest(options, handler);
     }
   }
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async{
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     if (err.requestOptions.path.contains(ApiEndPoints.authRefresh)) {
-      isRefreshing=false;
-      accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJlbWlseXMiLCJlbWFpbCI6ImVtaWx5LmpvaG5zb25AeC5kdW1teWpzb24uY29tIiwiZmlyc3ROYW1lIjoiRW1pbHkiLCJsYXN0TmFtZSI6IkpvaG5zb24iLCJnZW5kZXIiOiJmZW1hbGUiLCJpbWFnZSI6Imh0dHBzOi8vZHVtbXlqc29uLmNvbS9pY29uL2VtaWx5cy8xMjgiLCJpYXQiOjE3ODA2NTE5NDksImV4cCI6MTc4MDY1NTU0OX0.7v0FNoi2y89e5rG7ThGeddqKWhnT3_jJ4tVW2ic8QvM";
-      log("queue have ${requestQueue.length} requests");
-      for(ApiRequestModel request in requestQueue){
-        request.options.headers.addAll({'Authorization': 'Bearer $accessToken'});
-        request.handler.next(request.options);
-        log("calling api from queue");
-      }
+      isRefreshing = false;
       requestQueue.clear();
+      log("need to login");
       super.onError(err, handler);
-    }else if (err.type == DioExceptionType.badResponse && !authIndependentPaths.contains(err.requestOptions.path)) {
-      if(!isRefreshing){
+    } else if (err.type == DioExceptionType.badResponse &&
+        !authIndependentPaths.contains(err.requestOptions.path)) {
+      if (!isRefreshing) {
         log("need to call refresh token");
         ApiCalls.refreshAccessToken();
         log("refresh api called");
@@ -71,4 +69,35 @@ class AuthInterceptor extends Interceptor {
     }
   }
 
+  @override
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) async {
+    if (response.requestOptions.path.contains(ApiEndPoints.authRefresh)) {
+      isRefreshing = false;
+      final data = response.data;
+      String? accessToken = data['accessToken'];
+      String? refreshToken = data['refreshToken'];
+      if (accessToken != null && refreshToken != null) {
+        SecureStorage.saveTokens(
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        );
+        log("queue have ${requestQueue.length} requests");
+        for (ApiRequestModel request in requestQueue) {
+          request.options.headers.addAll({
+            'Authorization': 'Bearer $accessToken',
+          });
+          request.handler.next(request.options);
+          log("calling api from queue");
+        }
+        requestQueue.clear();
+      } else {
+        log("need to login");
+      }
+      requestQueue.clear();
+    }
+    super.onResponse(response, handler);
+  }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_controller.dart';
@@ -25,6 +26,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int charChangeCount=0;
+  Timer? _debounce;
   FocusNode searchFocusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
   CarouselSliderController carouselController = CarouselSliderController();
@@ -54,8 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    context.read<HomeBloc>().add(LoadProductListEvent());
+    context.read<HomeBloc>().add(LoadProductListEvent(skip: 0));
     context.read<HomeBloc>().add(LoadCategoryListEvent());
+    context.read<HomeBloc>().add(LoadUserDataEvent());
     super.initState();
   }
 
@@ -64,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     searchFocusNode.dispose();
     searchController.dispose();
     super.dispose();
+    _debounce?.cancel();
   }
 
   @override
@@ -135,7 +140,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       style: LightTheme.categoryCardTitleStyle,
                                     ),
                                     Text(
-                                      "Sanket Sawant",
+                                      state.isUserDataLoading?
+                                      "User"
+                                      : "${state.userData?.firstName??"User"} ${state.userData?.lastName??"User"}",
                                       style: LightTheme.sectionTitle.copyWith(
                                         color: LightTheme
                                             .secondaryOnBackgroundColor,
@@ -252,9 +259,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTapOutside: (event) {
                                   searchFocusNode.unfocus();
                                 },
+                                onChanged: (value){
+                                  charChangeCount++;
+                                  if(_debounce?.isActive??false){
+                                    _debounce?.cancel();
+                                  }
+                                  _debounce = Timer(Duration(milliseconds: 500), (){
+                                    if(charChangeCount>2){
+                                      charChangeCount=0;
+                                      context.read<HomeBloc>().add(SearchProductEvent(searchText: value));
+                                    }
+                                  });
+                                },
+                                onSubmitted: (value){
+                                  context.read<HomeBloc>().add(SearchProductEvent(searchText: value));
+                                },
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-
                                   hintText: "Search In Store",
                                   hintStyle: LightTheme.textFieldHint.copyWith(
                                     color: LightTheme.descTextColor,
@@ -328,17 +349,57 @@ class _HomeScreenState extends State<HomeScreen> {
                       currentIndex,
                       contents.length,
                     ),
+
+                    state.searchText.isEmpty?SizedBox():
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Text("Result For : ${state.searchText}",
+                                style: LightTheme.sectionTitle,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: (){
+                                searchController.clear();
+                                context.read<HomeBloc>().add(SearchProductEvent(searchText: ""));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(top: 3,bottom: 3,left: 7,right: 2),
+                                decoration: BoxDecoration(
+                                  color: LightTheme.primaryCardBackgroundColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  spacing: 5,
+                                  children: [
+                                    Text("clear",style: LightTheme.navigationTextStyle.copyWith(color: LightTheme.primaryOnBackgroundColor),),
+                                    Icon(Icons.cancel,size: 19,color: LightTheme.primaryCardOnBackgroundColor,)
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+
                     state.isProductListLoadingFailed?
                     Padding(
                       padding: const EdgeInsets.only(top:40),
                       child: Center(child: Text("Failed To Load Products",style: LightTheme.cardCompanyNameStyle.copyWith(color: LightTheme.errorTextColor),),),
                     )
                         :
+                    (!state.isProductListLoading && state.filteredProducts.isEmpty)?
+                    Padding(
+                      padding: const EdgeInsets.only(top:40),
+                      child: Center(child: Text("No Match Found",style: LightTheme.cardCompanyNameStyle.copyWith(color: LightTheme.errorTextColor),),),
+                    ):
                     GridView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount:state.isProductListLoading?4:
-                      state.products.length,
+                      state.filteredProducts.length,
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                         childAspectRatio: 0.68,
                         mainAxisSpacing: 10,
@@ -346,12 +407,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         maxCrossAxisExtent: 300,
                       ),
                       itemBuilder: (context, index) {
-
                         if(state.isProductListLoading){
-                          return CustomShimmer.getShimmerProductCard(
-                          );
+                          return CustomShimmer.getShimmerProductCard();
                         }
-                        final ProductModel product = state.products[index];
+                        final ProductModel product = state.filteredProducts[index];
                          return ProductCard(product: product,state: state,);
                       },
                     ),
