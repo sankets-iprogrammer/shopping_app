@@ -16,6 +16,7 @@ class LoggerInterceptor extends Interceptor{
   @override
   void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) {
     logger.i("""------response-------
+    api path: ${response.requestOptions.path}
     status code: ${response.statusCode}
     data: ${response.data}""");
     super.onResponse(response, handler);

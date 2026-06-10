@@ -48,16 +48,14 @@ class ProductCard extends StatelessWidget{
                             ),
                           ),
                           child: product.images == null
-                              ? Image.asset(
-                            "assets/product/iphone.png",
-                          )
+                              ? Icon(Icons.broken_image,size: 30,color: LightTheme.primaryCardBackgroundColor,)
                               :CachedNetworkImage(
                               imageUrl: product.images![0],
                             placeholder: (context,url){
-                              return Icon(Icons.broken_image,size: 30,);
+                              return Icon(Icons.broken_image,size: 30,color: LightTheme.primaryCardBackgroundColor,);
                             },
                             errorWidget: (context,url,error){
-                                return Icon(Icons.broken_image,size: 30,);
+                              return Icon(Icons.broken_image,size: 30,color: LightTheme.primaryCardBackgroundColor,);
                             },
                           )
                           // Image.network(product.images![0]),

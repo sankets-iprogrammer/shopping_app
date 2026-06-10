@@ -1,15 +1,16 @@
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shopping_app/core/helpers/global_messanger.dart';
 import 'package:shopping_app/core/network_project/api_base_url.dart';
 import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/core/network_project/api_end_points.dart';
 import 'package:shopping_app/core/network_project/interceptor/apiRequestModel.dart';
 import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
-import 'package:shopping_app/features/authentication/model/login_response.dart';
 
 class AuthInterceptor extends Interceptor {
   static bool isRefreshing = false;
+  static int refreshAttempts =0;
   static List<String> authIndependentPaths = [
     ApiEndPoints.login,
     ApiEndPoints.authRefresh,
@@ -53,8 +54,19 @@ class AuthInterceptor extends Interceptor {
     if (err.requestOptions.path.contains(ApiEndPoints.authRefresh)) {
       isRefreshing = false;
       requestQueue.clear();
-      log("need to login");
-      super.onError(err, handler);
+      log("need to login or retry");
+      
+      if(refreshAttempts<3){
+        refreshAttempts++;
+        if(await GlobalMessenger.getConfirmationSnackBar("Failed to refresh session.", "Retry")){
+          handler.resolve(await ApiCalls.retryApiCall(err.requestOptions));
+        }
+      }else{
+        if(await GlobalMessenger.getConfirmationSnackBar("Your session has expired. Please log in again.","Login")){
+          log('navigate to login page from main screen');
+        }
+      }
+      // super.onError(err, handler);
     } else if (err.type == DioExceptionType.badResponse &&
         !authIndependentPaths.contains(err.requestOptions.path)) {
       if (!isRefreshing) {

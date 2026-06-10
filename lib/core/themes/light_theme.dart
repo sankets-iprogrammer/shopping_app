@@ -87,6 +87,7 @@ class LightTheme {
     fontWeight: FontWeight(400),
     color: discountCardOnBackgroundColor,
   );
+  static TextStyle cardCurrentPriceStyle =productBasePriceStyle.copyWith(fontSize: 13);
   static TextStyle productBasePriceStyle =cardCompanyNameStyle.copyWith(fontSize: 20,decoration: TextDecoration.lineThrough, decorationColor:descTextColor,decorationThickness: 2);
   static TextStyle productCurrentPriceStyle =cardPriceStyle.copyWith(fontSize: 24);
   static TextStyle productNameStyle =GoogleFonts.nunito(

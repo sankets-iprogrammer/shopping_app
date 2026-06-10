@@ -17,9 +17,7 @@ class RealmDBStorage {
     realmDb.write((){
       realmDb.addAll(realmProductList,update: true);
     });
-    log("Getting all products from the Realm.");
-    var savedProducts = realmDb.all<RealmProductModel>();
-    log("There are ${savedProducts.length} cars in the Realm.");
+    log("products saved");
   }
   static void clearAllProducts(){
     realmDb.deleteAll<RealmProductModel>();

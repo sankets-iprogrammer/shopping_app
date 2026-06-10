@@ -45,6 +45,7 @@ dependencies:
   logger: ^2.7.0
   realm: ^20.2.0
   cached_network_image: ^3.4.1
+  stream_transform: ^2.1.1
 
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_app/core/helpers/global_messanger.dart';
 import 'package:shopping_app/core/network_project/api_client.dart';
 import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_bloc.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: GlobalMessenger.globalMessengerKey,
       title: 'Flutter Demo',
       home: MainScreen(),
     );

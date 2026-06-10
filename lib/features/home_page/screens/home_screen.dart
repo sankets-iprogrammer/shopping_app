@@ -11,7 +11,6 @@ import 'package:shopping_app/core/helpers/custom_snackbar.dart';
 import 'package:shopping_app/features/home_page/bloc/home_event.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
 import 'package:shopping_app/features/home_page/components/product_card.dart';
-
 import '../../../core/themes/light_theme.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../get_started/model/on_boarding_content.dart';
@@ -26,8 +25,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int charChangeCount=0;
-  Timer? _debounce;
   FocusNode searchFocusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
   CarouselSliderController carouselController = CarouselSliderController();
@@ -68,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
     searchFocusNode.dispose();
     searchController.dispose();
     super.dispose();
-    _debounce?.cancel();
   }
 
   @override
@@ -260,29 +256,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                   searchFocusNode.unfocus();
                                 },
                                 onChanged: (value){
-                                  charChangeCount++;
-                                  if(_debounce?.isActive??false){
-                                    _debounce?.cancel();
-                                  }
-                                  _debounce = Timer(Duration(milliseconds: 500), (){
-                                    if(charChangeCount>2){
-                                      charChangeCount=0;
-                                      context.read<HomeBloc>().add(SearchProductEvent(searchText: value));
-                                    }
-                                  });
+                                  if(value.trim().isEmpty)return;
+                                  context.read<HomeBloc>().add(SearchProductEvent(searchText: value.trim().toLowerCase()));
                                 },
                                 onSubmitted: (value){
-                                  context.read<HomeBloc>().add(SearchProductEvent(searchText: value));
+                                  if(value.trim().isEmpty)return;
+                                  context.read<HomeBloc>().add(SearchProductEvent(searchText: value.trim().toLowerCase()));
                                 },
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "Search In Store",
+                                  hintText: "Search in store",
                                   hintStyle: LightTheme.textFieldHint.copyWith(
                                     color: LightTheme.descTextColor,
                                   ),
                                 ),
                               ),
                             ),
+                            searchController.text.isNotEmpty?
+                                InkWell(
+                                  onTap: (){
+                                    context.read<HomeBloc>().add(SearchProductEvent(searchText: ""));
+                                    searchController.clear();
+                                  },
+                                  child: Icon(Icons.clear),
+                                ):
+                                SizedBox(),
+                            SizedBox(width: 15),
                           ],
                         ),
                       ),
@@ -357,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 20),
-                              child: Text("Result For : ${state.searchText}",
+                              child: Text("Results for : ${state.searchText}",
                                 style: LightTheme.sectionTitle,
                               ),
                             ),

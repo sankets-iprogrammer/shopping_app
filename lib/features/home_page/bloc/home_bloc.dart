@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_app/core/helpers/debounce_transformer.dart';
 import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/core/services/storage_services/realm_storage/realm_storage.dart';
 import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
@@ -18,12 +19,19 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
     on<ChangeProductCartCountEvent>(_changeProductCartCount);
     on<LoadProductDataEvent>(_loadProductData);
     on<LoadUserDataEvent>(_loadUserData);
-    on<SearchProductEvent>(_searchProductEvent);
+    on<SearchProductEvent>(_searchProductEvent,
+    transformer: debounce(const Duration(milliseconds: 500)));
   }
   Future<void> _loadProductList(LoadProductListEvent event,emit)async{
     emit(state.copyWith(isProductListLoading: true,isBannerLoading: true));
     try{
       List<ProductModel> products=await ApiCalls.getAllProductsList(skip: 0);
+
+      ApiCalls.getCurrentUser();
+      ApiCalls.getCurrentUser();
+      ApiCalls.getCurrentUser();
+      ApiCalls.getCurrentUser();
+
       log(products.toString());
       emit(state.copyWith(
         products: products,
@@ -115,12 +123,23 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
   }
 
   void _searchProductEvent(SearchProductEvent event, emit){
-    List<ProductModel> filteredProduct= state.products.where((ProductModel product){
-     return (product.title?.toLowerCase().contains(event.searchText.toLowerCase()) ?? false) || (product.description?.toLowerCase().contains(event.searchText.toLowerCase()) ?? false) || (product.brand?.toLowerCase().contains(event.searchText.toLowerCase()) ?? false);
-    }).toList();
-    emit(state.copyWith(filteredProducts: filteredProduct,searchText: event.searchText));
+    String actualSearchText=event.searchText.substring(0,(event.searchText.length~/3)*3);
+    if(actualSearchText.isEmpty){
+      emit(state.copyWith(filteredProducts: state.products,searchText:""));
+    }else{
+      log("actual actualSearchText: $actualSearchText");
+      if(actualSearchText==state.searchText)return;
+      log("searched for ${event.searchText}");
+      List<ProductModel> filteredProduct= state.products.where((ProductModel product){
+        List<String> words =actualSearchText.split(" ");
+        log("words: $words");
+        return (words.every((word){
+          return (product.title?.toLowerCase().contains(word)??false) ||  (product.brand?.toLowerCase().contains(word)??false);
+        })) ;
+      }).toList();
+      emit(state.copyWith(filteredProducts: filteredProduct,searchText:actualSearchText));
+    }
   }
-
 }
 
 

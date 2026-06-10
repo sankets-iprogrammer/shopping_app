@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/themes/light_theme.dart';
 import 'package:shopping_app/features/main_screen/bloc/main_screen_bloc.dart';
 import 'package:shopping_app/features/main_screen/bloc/main_screen_events.dart';
+import '../../cart_and_order/screens/cart_screen.dart';
 import '../../home_page/screens/home_screen.dart';
 import '../../wishlist/screens/wishlist_screen.dart';
 import '../bloc/main_screen_state.dart';
@@ -50,6 +51,7 @@ class _MainScreenState extends State<MainScreen> {
             body: switch(state.currentPageIndex){
               0 => HomeScreen(),
               2 => WishlistScreen(),
+              3 => CartScreen(),
               _ => HomeScreen()
             }
 
