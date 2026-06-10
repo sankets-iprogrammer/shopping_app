@@ -639,3 +639,145 @@ class RealmProductModel extends _RealmProductModel
   @override
   SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
 }
+
+class RealmAddressModel extends _RealmAddressModel
+    with RealmEntity, RealmObjectBase, RealmObject {
+  RealmAddressModel(
+    String id,
+    String name,
+    int number,
+    String street,
+    int postalCode,
+    String city,
+    String state,
+    String country,
+  ) {
+    RealmObjectBase.set(this, 'id', id);
+    RealmObjectBase.set(this, 'name', name);
+    RealmObjectBase.set(this, 'number', number);
+    RealmObjectBase.set(this, 'street', street);
+    RealmObjectBase.set(this, 'postalCode', postalCode);
+    RealmObjectBase.set(this, 'city', city);
+    RealmObjectBase.set(this, 'state', state);
+    RealmObjectBase.set(this, 'country', country);
+  }
+
+  RealmAddressModel._();
+
+  @override
+  String get id => RealmObjectBase.get<String>(this, 'id') as String;
+  @override
+  set id(String value) => RealmObjectBase.set(this, 'id', value);
+
+  @override
+  String get name => RealmObjectBase.get<String>(this, 'name') as String;
+  @override
+  set name(String value) => RealmObjectBase.set(this, 'name', value);
+
+  @override
+  int get number => RealmObjectBase.get<int>(this, 'number') as int;
+  @override
+  set number(int value) => RealmObjectBase.set(this, 'number', value);
+
+  @override
+  String get street => RealmObjectBase.get<String>(this, 'street') as String;
+  @override
+  set street(String value) => RealmObjectBase.set(this, 'street', value);
+
+  @override
+  int get postalCode => RealmObjectBase.get<int>(this, 'postalCode') as int;
+  @override
+  set postalCode(int value) => RealmObjectBase.set(this, 'postalCode', value);
+
+  @override
+  String get city => RealmObjectBase.get<String>(this, 'city') as String;
+  @override
+  set city(String value) => RealmObjectBase.set(this, 'city', value);
+
+  @override
+  String get state => RealmObjectBase.get<String>(this, 'state') as String;
+  @override
+  set state(String value) => RealmObjectBase.set(this, 'state', value);
+
+  @override
+  String get country => RealmObjectBase.get<String>(this, 'country') as String;
+  @override
+  set country(String value) => RealmObjectBase.set(this, 'country', value);
+
+  @override
+  Stream<RealmObjectChanges<RealmAddressModel>> get changes =>
+      RealmObjectBase.getChanges<RealmAddressModel>(this);
+
+  @override
+  Stream<RealmObjectChanges<RealmAddressModel>> changesFor([
+    List<String>? keyPaths,
+  ]) => RealmObjectBase.getChangesFor<RealmAddressModel>(this, keyPaths);
+
+  @override
+  RealmAddressModel freeze() =>
+      RealmObjectBase.freezeObject<RealmAddressModel>(this);
+
+  EJsonValue toEJson() {
+    return <String, dynamic>{
+      'id': id.toEJson(),
+      'name': name.toEJson(),
+      'number': number.toEJson(),
+      'street': street.toEJson(),
+      'postalCode': postalCode.toEJson(),
+      'city': city.toEJson(),
+      'state': state.toEJson(),
+      'country': country.toEJson(),
+    };
+  }
+
+  static EJsonValue _toEJson(RealmAddressModel value) => value.toEJson();
+  static RealmAddressModel _fromEJson(EJsonValue ejson) {
+    if (ejson is! Map<String, dynamic>) return raiseInvalidEJson(ejson);
+    return switch (ejson) {
+      {
+        'id': EJsonValue id,
+        'name': EJsonValue name,
+        'number': EJsonValue number,
+        'street': EJsonValue street,
+        'postalCode': EJsonValue postalCode,
+        'city': EJsonValue city,
+        'state': EJsonValue state,
+        'country': EJsonValue country,
+      } =>
+        RealmAddressModel(
+          fromEJson(id),
+          fromEJson(name),
+          fromEJson(number),
+          fromEJson(street),
+          fromEJson(postalCode),
+          fromEJson(city),
+          fromEJson(state),
+          fromEJson(country),
+        ),
+      _ => raiseInvalidEJson(ejson),
+    };
+  }
+
+  static final schema = () {
+    RealmObjectBase.registerFactory(RealmAddressModel._);
+    register(_toEJson, _fromEJson);
+    return const SchemaObject(
+      ObjectType.realmObject,
+      RealmAddressModel,
+      'RealmAddressModel',
+      [
+        SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
+        SchemaProperty('name', RealmPropertyType.string),
+        SchemaProperty('number', RealmPropertyType.int),
+        SchemaProperty('street', RealmPropertyType.string),
+        SchemaProperty('postalCode', RealmPropertyType.int),
+        SchemaProperty('city', RealmPropertyType.string),
+        SchemaProperty('state', RealmPropertyType.string),
+        SchemaProperty('country', RealmPropertyType.string),
+      ],
+    );
+  }();
+
+  @override
+  SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
+}

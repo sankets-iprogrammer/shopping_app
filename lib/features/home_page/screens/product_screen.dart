@@ -7,7 +7,7 @@ import '../../../core/themes/light_theme.dart';
 import '../bloc/home_event.dart';
 import '../components/review_card.dart';
 import '../components/specification_card.dart';
-import '../helpers/helper_functions.dart';
+import '../../../core/helpers/helper_functions.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -23,6 +23,7 @@ class _ProductScreenState extends State<ProductScreen> {
       backgroundColor: LightTheme.primaryBackgroundColor,
       body: BlocBuilder<HomeBloc,HomeState>(
         builder: (context,HomeState state) {
+          if(state.isCurrentProductDataLoading)return Center(child: CircularProgressIndicator(),);
           return SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -107,7 +108,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         Text("\$${state.currentProduct!.price}", style: LightTheme.productBasePriceStyle),
                         SizedBox(width: 10),
                         Text(
-                          "\$${calculateDiscountedPrice(state.currentProduct!.price,state.currentProduct!.discountPercentage)}",
+                          "\$${HelperFunctions.calculateDiscountedPrice(state.currentProduct!.price,state.currentProduct!.discountPercentage)}",
                           style: LightTheme.productCurrentPriceStyle,
                         ),
                         Spacer(),
@@ -122,7 +123,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       children: [
                         Text("Stock: ", style: LightTheme.productStockStyle),
                         Text(
-                          getStockStateLabel(state.currentProduct!.stock),
+                            HelperFunctions.getStockStateLabel(state.currentProduct!.stock),
                           style: LightTheme.productStockStyle.copyWith(
                             fontWeight: FontWeight.w800,
                           ),
@@ -182,7 +183,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     SpecificationCard(
                       title: "DIMENSIONS",
-                      value: getDimensionText(state.currentProduct!.dimensions),
+                      value: HelperFunctions.getDimensionText(state.currentProduct!.dimensions),
                       width: double.infinity,
                       backGroundColor: LightTheme.secondaryCardBackgroundColor,
                     ),

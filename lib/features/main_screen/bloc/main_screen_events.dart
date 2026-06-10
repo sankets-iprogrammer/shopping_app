@@ -4,3 +4,7 @@ class SetPageIndexEvent extends MainScreenEvents{
   SetPageIndexEvent({required this.index});
 }
 
+class LogoutEvent extends MainScreenEvents{
+}
+
+

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:realm/realm.dart';
 import 'package:shopping_app/core/services/storage_services/realm_storage/realm_data_models/realm_model.dart';
 import 'package:shopping_app/features/home_page/model/product_model.dart';
+import 'package:shopping_app/features/profile/models/address_model.dart';
 
 class RealmDBStorage {
   static final config = Configuration.local([RealmProductModel.schema,RealmReviewModel.schema,RealmMeta.schema,RealmDimensionModel.schema]);
@@ -27,5 +28,23 @@ class RealmDBStorage {
     return realmDb.all<RealmProductModel>().map((RealmProductModel realmProduct){
       return ProductModel.fromRealmProduct(realmProduct);
     }).toList().cast<ProductModel>();
+  }
+
+  static void saveAddresses(List<AddressModel> addresses){
+    List<RealmAddressModel> realmAddressList = addresses
+        .map((address) {
+      return address.toRealm();
+    })
+        .toList()
+        .cast<RealmAddressModel>();
+    realmDb.write((){
+      realmDb.addAll(realmAddressList,update: true);
+    });
+  }
+
+  static List<AddressModel> getAddressList(){
+    return realmDb.all<RealmAddressModel>().map((RealmAddressModel addressProduct){
+      return AddressModel.fromRealmAddress(addressProduct);
+    }).toList().cast<AddressModel>();
   }
 }

@@ -1,25 +1,26 @@
-class MainScreenState {
+
+
+class MainScreenActiveState{
   final int currentPageIndex;
-  final bool showRefreshError;
-  final bool showNavigateToLogin;
-  MainScreenState({
+  final bool logoutState;
+  MainScreenActiveState({
     required this.currentPageIndex,
-    required this.showNavigateToLogin,
-    required this.showRefreshError
+    required this.logoutState
   });
 
-  MainScreenState copyWith({
+  MainScreenActiveState copyWith({
     int? currentPageIndex,
-    bool? showRefreshError,
-    bool? showNavigateToLogin
+    bool logoutState=false,
 }) {
-    return MainScreenState(currentPageIndex: currentPageIndex??this.currentPageIndex,
-        showNavigateToLogin: showNavigateToLogin??this.showNavigateToLogin,
-        showRefreshError: showRefreshError??this.showRefreshError);
+    return MainScreenActiveState(
+        currentPageIndex: currentPageIndex??this.currentPageIndex,
+        logoutState:logoutState
+    );
   }
-  factory MainScreenState.initial(){
-    return MainScreenState(currentPageIndex: 0, showNavigateToLogin: false, showRefreshError: false);
+  factory MainScreenActiveState.initial(){
+    return MainScreenActiveState(currentPageIndex: 0, logoutState: false);
   }
 }
+
 
 

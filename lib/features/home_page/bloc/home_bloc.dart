@@ -26,11 +26,10 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
     emit(state.copyWith(isProductListLoading: true,isBannerLoading: true));
     try{
       List<ProductModel> products=await ApiCalls.getAllProductsList(skip: 0);
-
       ApiCalls.getCurrentUser();
-      ApiCalls.getCurrentUser();
-      ApiCalls.getCurrentUser();
-      ApiCalls.getCurrentUser();
+      // ApiCalls.getCurrentUser();
+      // ApiCalls.getCurrentUser();
+      // ApiCalls.getCurrentUser();
 
       log(products.toString());
       emit(state.copyWith(

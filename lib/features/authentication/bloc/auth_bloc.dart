@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
+import 'package:shopping_app/core/services/storage_services/shared_preferences_service.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_event.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_state.dart';
 import 'package:shopping_app/features/authentication/model/login_response.dart';
@@ -24,23 +25,7 @@ class AuthBloc extends Bloc<AuthEvent,AuthState>{
     try{
       LoginResponse loginResponse= await ApiCalls.login(event.loginRequest);
       await SecureStorage.addUserLoginData(loginResponse);
-
-
-      // ApiCalls.getCurrentUser();
-
-      // final results=await Future.wait([
-      // ApiCalls.getCurrentUser(),
-      // ApiCalls.getCurrentUser(),
-      // ApiCalls.getCurrentUser(),
-      // ApiCalls.getCurrentUser(),
-      // ]);
-      //
-      // for(final result in results){
-      //   log("this is api response data got for original call");
-      //   log(result.toString());
-      // }
-
-
+      await SharedPreferencesServices.setLoggedIn(true);
       emit(LoginSuccess());
     }on DioException catch(e){
       if(e.error is ApiException){

@@ -7,7 +7,7 @@ import 'package:shopping_app/features/home_page/model/product_model.dart';
 
 import '../../home_page/bloc/home_bloc.dart';
 import '../../home_page/bloc/home_event.dart';
-import '../../home_page/helpers/helper_functions.dart';
+import '../../../core/helpers/helper_functions.dart';
 
 class CartProductCard extends StatelessWidget {
   final ProductModel product;
@@ -111,7 +111,7 @@ class CartProductCard extends StatelessWidget {
               Text("\$${product.price}", style: LightTheme.cardCurrentPriceStyle),
               SizedBox(width: 10),
               Text(
-                "\$${calculateDiscountedPrice(product.price,product.discountPercentage)}",
+                "\$${HelperFunctions.calculateDiscountedPrice(product.price,product.discountPercentage)}",
                 style: LightTheme.cardPriceStyle,
               ),
               SizedBox(width: 10),

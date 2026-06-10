@@ -23,16 +23,39 @@ class LightTheme {
   static Color errorTextColor= Color(0xfff9848c);
   static Color starColor= Color(0xFFFFD700);
   static Color specBorderColor=Color(0xFFC3C6D5);
+  static Color impSnackBarBackgroundColor=Color(0xFF040C2B);
+  static Color impSnackBarOnBackgroundColor=Colors.white;
 
 
   static double pageHorizontalMargin =25;
   static double pageVerticalMargin =25;
+
+
+  static TextStyle cartPriceText =textStyle.copyWith(
+      fontSize:14,
+      fontWeight: FontWeight(500),
+      color:primaryOnBackgroundColor
+  );
+  static TextStyle cartTotalPriceText =textStyle.copyWith(
+      fontSize:15,
+      fontWeight: FontWeight(900),
+      color:primaryOnBackgroundColor
+  );
+
+
+  static TextStyle impSnackBarText =textStyle.copyWith(
+      fontSize:16,
+      fontWeight: FontWeight(700),
+      color:impSnackBarOnBackgroundColor
+  );
 
   static TextStyle pageTitle =GoogleFonts.nunito(
     fontSize:24,
     fontWeight: FontWeight(700),
     color: primaryOnBackgroundColor
   );
+
+
 
   static TextStyle sectionTitle =GoogleFonts.nunito(
       fontSize:16,
@@ -109,6 +132,7 @@ class LightTheme {
   static InputBorder textFieldBorder =OutlineInputBorder(borderSide: BorderSide(width: 1,color: descTextColor),borderRadius: BorderRadius.circular(10  ));
   static InputDecoration textFieldDecoration({required String label, required String hintText,required IconData iconData,IconData? suffixIcon,Function? onSuffixIconClicked}){
     return InputDecoration(
+      counterText: "",
         label: Text(label),
         suffixIcon: suffixIcon==null?null:InkWell(
             child: Icon(suffixIcon,size: 25,color: descTextColor,),
@@ -118,7 +142,7 @@ class LightTheme {
           }
         ),
         prefixIcon: Icon(iconData,size: 25,color: descTextColor,),
-        contentPadding: EdgeInsets.symmetric(vertical: 14,horizontal: 12),
+        contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 12),
         hintText: hintText,
         hintStyle: textFieldHint,
         enabledBorder:textFieldBorder,

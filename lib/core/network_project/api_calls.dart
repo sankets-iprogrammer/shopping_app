@@ -10,9 +10,11 @@ class ApiCalls {
   static ApiClient apiClient = ApiClient();
 
   static Future login(LoginRequest loginRequest) async {
+    Map<String,dynamic> data =loginRequest.toJson();
+    data["expiresInMins"]=5;
     final response = await apiClient.dio.post(
       ApiBaseUrl.baseUrl + ApiEndPoints.login,
-      data: loginRequest.toJson(),
+      data: data,
     );
     final LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     return loginResponse;

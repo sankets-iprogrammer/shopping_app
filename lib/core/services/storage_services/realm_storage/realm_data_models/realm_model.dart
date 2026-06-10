@@ -54,6 +54,19 @@ class _RealmProductModel{
   List<String> images =[];
 }
 
+@RealmModel()
+class _RealmAddressModel{
+  @PrimaryKey()
+  late String id;
+  late String name;
+  late int number;
+  late String street;
+  late int postalCode;
+  late String city;
+  late String state;
+  late String country;
+}
+
 
 
 

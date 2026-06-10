@@ -1,12 +1,20 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:shopping_app/core/helpers/common_functions.dart';
 import 'package:shopping_app/core/helpers/global_messanger.dart';
 import 'package:shopping_app/core/network_project/api_base_url.dart';
 import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/core/network_project/api_end_points.dart';
 import 'package:shopping_app/core/network_project/interceptor/apiRequestModel.dart';
 import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
+import 'package:shopping_app/features/main_screen/bloc/main_screen_bloc.dart';
+import 'package:shopping_app/features/main_screen/screens/main_screen.dart';
+
+import '../../../features/authentication/screens/login_screen.dart';
+import '../../../features/main_screen/bloc/main_screen_events.dart';
+import '../../helpers/global_navigator.dart';
 
 class AuthInterceptor extends Interceptor {
   static bool isRefreshing = false;
@@ -24,21 +32,19 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     if (options.path.contains(ApiEndPoints.authRefresh)) {
-      if (!isRefreshing) {
         isRefreshing = true;
         Map<String, dynamic> data = {
-          'refreshToken': await SecureStorage.refreshToken() ?? "",
+          'refreshToken': await SecureStorage.refreshToken()?? "",
           'expiresInMins': 30,
         };
         options.data = data;
         super.onRequest(options, handler);
-      }
     } else if (!authIndependentPaths.contains(options.path)) {
       String? accessToken = await SecureStorage.getAccessToken();
       if (isRefreshing) {
         requestQueue.add(ApiRequestModel(handler: handler, options: options));
       } else {
-        options.headers.addAll({'Authorization': 'Bearer $accessToken j'});
+        options.headers.addAll({'Authorization': 'Bearer $accessToken'});
         super.onRequest(options, handler);
       }
     } else {
@@ -52,21 +58,21 @@ class AuthInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     if (err.requestOptions.path.contains(ApiEndPoints.authRefresh)) {
-      isRefreshing = false;
-      requestQueue.clear();
       log("need to login or retry");
-      
       if(refreshAttempts<3){
         refreshAttempts++;
         if(await GlobalMessenger.getConfirmationSnackBar("Failed to refresh session.", "Retry")){
-          handler.resolve(await ApiCalls.retryApiCall(err.requestOptions));
+          ApiCalls.refreshAccessToken();
         }
       }else{
+        isRefreshing = false;
         if(await GlobalMessenger.getConfirmationSnackBar("Your session has expired. Please log in again.","Login")){
-          log('navigate to login page from main screen');
+          requestQueue.clear();
+          refreshAttempts=0;
+          CommonFunctions.logout();
         }
       }
-      // super.onError(err, handler);
+
     } else if (err.type == DioExceptionType.badResponse &&
         !authIndependentPaths.contains(err.requestOptions.path)) {
       if (!isRefreshing) {
@@ -107,6 +113,9 @@ class AuthInterceptor extends Interceptor {
         requestQueue.clear();
       } else {
         log("need to login");
+        requestQueue.clear();
+        refreshAttempts=0;
+        CommonFunctions.logout();
       }
       requestQueue.clear();
     }
