@@ -55,6 +55,8 @@ class LightTheme {
     color: primaryOnBackgroundColor
   );
 
+  static TextStyle profileLabelText =pageDesc.copyWith(fontSize: 15,fontWeight:FontWeight(600));
+  static TextStyle profileValueText =pageDesc.copyWith(color: primaryOnBackgroundColor, fontSize: 15);
 
 
   static TextStyle sectionTitle =GoogleFonts.nunito(

@@ -8,10 +8,15 @@ import 'package:shopping_app/core/themes/light_theme.dart';
 import 'package:shopping_app/features/authentication/screens/login_screen.dart';
 import 'package:shopping_app/features/main_screen/bloc/main_screen_bloc.dart';
 import 'package:shopping_app/features/main_screen/bloc/main_screen_events.dart';
+import 'package:shopping_app/features/profile/bloc/profile_events.dart';
 import 'package:shopping_app/features/profile/screens/address_list_screen.dart';
 import '../../cart_and_order/screens/cart_screen.dart';
 import '../../home_page/screens/home_screen.dart';
+import '../../profile/bloc/profile_bloc.dart';
 import '../../profile/screens/add_address_form_screen.dart';
+import '../../profile/screens/edit_profile_screen.dart';
+import '../../profile/screens/order_details_screen.dart';
+import '../../profile/screens/profile_screen.dart';
 import '../../wishlist/screens/wishlist_screen.dart';
 import '../bloc/main_screen_state.dart';
 
@@ -23,6 +28,11 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  @override
+  void initState() {
+    context.read<ProfileBloc>().add(GetUserProfileDataEvent());
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MainScreenBloc, MainScreenActiveState>(
@@ -62,9 +72,9 @@ class _MainScreenState extends State<MainScreen> {
             ),
             body: switch(state.currentPageIndex){
               0 => HomeScreen(),
-              1 => CartScreen(),
+              1 => OrderDetailsScreen(),
               2 => WishlistScreen(),
-              3 => CartScreen(),
+              3 => ProfileScreen(),
               _ => HomeScreen()
             }
 

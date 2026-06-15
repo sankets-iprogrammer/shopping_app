@@ -1,137 +1,204 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shopping_app/core/helpers/custom_snackbar.dart';
+import 'package:shopping_app/core/helpers/overlay_widgets.dart';
+import 'package:shopping_app/core/helpers/u_uid_generator.dart';
 import 'package:shopping_app/core/widgets/buttons.dart';
 import 'package:shopping_app/core/widgets/custom_appbar.dart';
+import 'package:shopping_app/features/profile/bloc/profile_events.dart';
+import 'package:shopping_app/features/profile/bloc/profile_state.dart';
+import 'package:shopping_app/features/profile/helpers/editing_status_enum.dart';
+import 'package:shopping_app/features/profile/models/address_model.dart';
 
 import '../../../core/themes/light_theme.dart';
+import '../bloc/profile_bloc.dart';
 
-class AddAddressFormScreen extends StatelessWidget {
+class AddAddressFormScreen extends StatefulWidget {
   const AddAddressFormScreen({super.key});
+
+  @override
+  State<AddAddressFormScreen> createState() => _AddAddressFormScreenState();
+}
+
+class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
+  GlobalKey<FormState> _loginFormKey =GlobalKey<FormState>();
+  TextEditingController nameController=TextEditingController();
+  TextEditingController numberController=TextEditingController();
+  TextEditingController streetController=TextEditingController();
+  TextEditingController postalCodeController=TextEditingController();
+  TextEditingController cityController=TextEditingController();
+  TextEditingController stateController=TextEditingController();
+  TextEditingController countryController=TextEditingController();
+  AddressModel? address;
+  @override
+  void initState() {
+    address= context.read<ProfileBloc>().state.currentEditingAddress;
+    nameController.text=address?.name??"";
+    numberController.text=address?.number.toString()??"";
+    streetController.text=address?.street??"";
+    postalCodeController.text=address?.postalCode.toString()??"";
+    cityController.text=address?.city??"";
+    stateController.text=address?.state??"";
+    countryController.text=address?.country??"";
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    TextEditingController _nameController=TextEditingController();
-    TextEditingController _numberController=TextEditingController();
-    TextEditingController _streetController=TextEditingController();
-    TextEditingController _postalCodeController=TextEditingController();
-    TextEditingController _cityController=TextEditingController();
-    TextEditingController _stateController=TextEditingController();
-    TextEditingController _countryController=TextEditingController();
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
+    return Scaffold(
+      backgroundColor: LightTheme.primaryBackgroundColor,
+      body: BlocListener<ProfileBloc,ProfileState>(
+        listener: (context,state)async{
+          if(state.addressEditingStatus==EditingStatus.success){
+            await showOverlayAnimation(context,assetsAddress: "assets/animations/success.json",duration: Duration(seconds: 2));
+            Navigator.pop(context);
+          }else if(state.addressEditingStatus==EditingStatus.error){
+            CustomSnackBar.showErrorSnackBar(context, "Failed to save address");
+          }
+        },
+        child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
               children: [
-                CustomAppbar.featureAppbar("Add Address", context: context,goBack: true),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin,vertical: 40),
+                SingleChildScrollView(
                   child: Column(
-                    spacing: 20,
                     children: [
-                      TextFormField(
-                        maxLength: 30,
-                        controller:_nameController,
-                        decoration: LightTheme.textFieldDecoration(label: "Name", hintText:"Name eg. Home, Work, etc...",iconData:Icons.home_outlined),
-                        validator: (value){
-                          if(value?.trim().isEmpty??true){
-                            return "This field is mandatory!";
-                          }
-                        },
-                      ),
-                      TextFormField(
-                        maxLength: 10,
-                        controller:_numberController,
-                        decoration: LightTheme.textFieldDecoration(label: "Mobile Number", hintText:"Mobile Number",iconData:Icons.call_outlined),
-                        validator: (value){
-                          if(value?.trim().isEmpty??true){
-                            return "This field is mandatory!";
-                          }
-                        },
-                      ),
-                      Row(
-                        spacing: 10,
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              maxLength: 30,
-                              controller:_streetController,
-                              decoration: LightTheme.textFieldDecoration(label: "House & Street", hintText:"House & Street",iconData:Icons.house_outlined),
-                              validator: (value){
-                                if(value?.trim().isEmpty??true){
-                                  return "This field is mandatory!";
-                                }
-                              },
-                            ),
+                      CustomAppbar.featureAppbar(address==null?"Add Address":"Edit Address", context: context,goBack: true),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin,vertical: 10),
+                        child: Form(
+                          key :_loginFormKey,
+                          child: Column(
+                            spacing: 20,
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                  child: Image.asset("assets/common_icons/location_image.png",fit: BoxFit.fill,)),
+                              Text("Add your delivery address to ensure your orders reach the right location. You can update or manage your saved addresses anytime.",style: LightTheme.productDesc,),
+                              TextFormField(
+                                maxLength: 30,
+                                controller:nameController,
+                                decoration: LightTheme.textFieldDecoration(label: "Name", hintText:"Name eg. Home, Work, etc...",iconData:Icons.home_outlined),
+                                validator: (value){
+                                  if(value?.trim().isEmpty??true){
+                                    return "This field is mandatory!";
+                                  }
+                                },
+                              ),
+                              TextFormField(
+                                maxLength: 10,
+                                controller:numberController,
+                                decoration: LightTheme.textFieldDecoration(label: "Mobile Number", hintText:"Mobile Number",iconData:Icons.call_outlined),
+                                validator: (value){
+                                  if(value?.trim().isEmpty??true){
+                                    return "This field is mandatory!";
+                                  }
+                                },
+                              ),
+                              Row(
+                                spacing: 10,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      maxLength: 30,
+                                      controller:streetController,
+                                      decoration: LightTheme.textFieldDecoration(label: "House & Street", hintText:"House & Street",iconData:Icons.house_outlined),
+                                      validator: (value){
+                                        if(value?.trim().isEmpty??true){
+                                          return "This field is mandatory!";
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      maxLength: 30,
+                                      controller:postalCodeController,
+                                      decoration: LightTheme.textFieldDecoration(label: "Postal Code", hintText:"Postal Code",iconData:Icons.local_post_office_outlined),
+                                      validator: (value){
+                                        if(value?.trim().isEmpty??true){
+                                          return "This field is mandatory!";
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                spacing: 10,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      maxLength: 30,
+                                      controller:cityController,
+                                      decoration: LightTheme.textFieldDecoration(label: "City", hintText:"City",iconData:Icons.location_city_outlined),
+                                      validator: (value){
+                                        if(value?.trim().isEmpty??true){
+                                          return "This field is mandatory!";
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      maxLength: 30,
+                                      controller:stateController,
+                                      decoration: LightTheme.textFieldDecoration(label: "State", hintText:"State",iconData:Icons.network_cell_outlined),
+                                      validator: (value){
+                                        if(value?.trim().isEmpty??true){
+                                          return "This field is mandatory!";
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TextFormField(
+                                maxLength: 30,
+                                controller:countryController,
+                                decoration: LightTheme.textFieldDecoration(label: "Country", hintText:"Country",iconData:Icons.network_cell_outlined),
+                                validator: (value){
+                                  if(value?.trim().isEmpty??true){
+                                    return "This field is mandatory!";
+                                  }
+                                },
+                              ),
+                              SizedBox(height: 100,)
+                            ],
                           ),
-                          Expanded(
-                            child: TextFormField(
-                              maxLength: 30,
-                              controller:_postalCodeController,
-                              decoration: LightTheme.textFieldDecoration(label: "Postal Code", hintText:"Postal Code",iconData:Icons.local_post_office_outlined),
-                              validator: (value){
-                                if(value?.trim().isEmpty??true){
-                                  return "This field is mandatory!";
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        spacing: 10,
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              maxLength: 30,
-                              controller:_cityController,
-                              decoration: LightTheme.textFieldDecoration(label: "City", hintText:"City",iconData:Icons.location_city_outlined),
-                              validator: (value){
-                                if(value?.trim().isEmpty??true){
-                                  return "This field is mandatory!";
-                                }
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              maxLength: 30,
-                              controller:_stateController,
-                              decoration: LightTheme.textFieldDecoration(label: "State", hintText:"State",iconData:Icons.network_cell_outlined),
-                              validator: (value){
-                                if(value?.trim().isEmpty??true){
-                                  return "This field is mandatory!";
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      TextFormField(
-                        maxLength: 30,
-                        controller:_countryController,
-                        decoration: LightTheme.textFieldDecoration(label: "Country", hintText:"Country",iconData:Icons.network_cell_outlined),
-                        validator: (value){
-                          if(value?.trim().isEmpty??true){
-                            return "This field is mandatory!";
-                          }
-                        },
+                        ),
                       ),
                     ],
                   ),
+                ),
+                Positioned(
+                  left: 0,
+                    right: 0,
+                    bottom: 20,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
+                      child: MyButton.primaryButton(text: "Save", onTap: ()async{
+                        if(_loginFormKey.currentState!.validate()){
+                          AddressModel savedAddress =AddressModel(
+                              id: address?.id?? UUidGenerator.getUniqueKey(),
+                              name: nameController.text,
+                              number: int.parse(numberController.text),
+                              street: streetController.text,
+                              postalCode: int.parse(postalCodeController.text),
+                              city: cityController.text,
+                              state: stateController.text,
+                              country: countryController.text
+                          );
+                          context.read<ProfileBloc>().add(SaveAddressEvent(address: savedAddress));
+                        }
+                      }
+                      ),
+                    )
                 )
               ],
             ),
-          ),
-          Positioned(
-            left: 0,
-              right: 0,
-              bottom: 20,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
-                child: MyButton.primaryButton(text: "Save", onTap: (){}),
-              ))
-        ],
+          )
       ),
     );
   }

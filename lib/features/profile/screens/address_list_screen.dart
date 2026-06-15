@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shopping_app/core/themes/light_theme.dart';
 import 'package:shopping_app/core/widgets/buttons.dart';
 import 'package:shopping_app/features/cart_and_order/widgets/address_card.dart';
 import 'package:shopping_app/features/profile/bloc/profile_bloc.dart';
+import 'package:shopping_app/features/profile/bloc/profile_events.dart';
 import 'package:shopping_app/features/profile/bloc/profile_state.dart';
+import 'package:shopping_app/features/profile/screens/add_address_form_screen.dart';
 
 import '../../../core/widgets/custom_appbar.dart';
+import '../helpers/editing_status_enum.dart';
 import '../models/address_model.dart';
 
 class AddressListScreen extends StatelessWidget {
@@ -14,20 +18,40 @@ class AddressListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc,ProfileState>(
+    return BlocConsumer<ProfileBloc,ProfileState>(
+      listener: (context,state){
+        if(state.addressEditingStatus==EditingStatus.editing){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddAddressFormScreen()));
+        }
+      },
       builder: (context,state) {
-        return SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  CustomAppbar.featureAppbar("Addresses",context: context,goBack: true),
-                  Padding(
-                    padding:EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
-                    child: Column(
-                      children: [
+        return Scaffold(
+          backgroundColor: LightTheme.primaryBackgroundColor,
+          body: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      CustomAppbar.featureAppbar("Addresses",context: context,goBack: true),
+                      Padding(
+                        padding:EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
+                        child:
+                        state.addresses.isEmpty?
+                            Column(
+                              children: [
+                                SizedBox(height: 40,),
+                                Center(child: Lottie.asset('assets/animations/empty.json',height: 350,)),
+                                Text("No addresses added yet.",
+                                  style: LightTheme.pageTitle,
+                                ),
+                                SizedBox(height: 10,),
+                                Text("Add a new address to make checkout faster and easier.",style: LightTheme.productDesc,textAlign: TextAlign.center,),
+                                SizedBox(height: 20,),
+                              ],
+                            ):
                         ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -38,24 +62,24 @@ class AddressListScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(bottom:20),
                                 child: AddressCard(address: address),
                               );
-                            })
-                      ],
-                    ),
-                  )
-
-                ]
-
-              ),
-              Positioned(
-                  bottom: 20,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
-                    child: MyButton.primaryButton(
-                        text: "Add Address", onTap: () {}),
-                  ))
-            ],
+                            }),
+                      )
+                    ]
+                  ),
+                ),
+                Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
+                      child: MyButton.primaryButton(
+                          text: "Add Address", onTap: () {
+                            context.read<ProfileBloc>().add(OpenAddressEditingScreenEvent(address: null));
+                      }),
+                    ))
+              ],
+            ),
           ),
         );
       }

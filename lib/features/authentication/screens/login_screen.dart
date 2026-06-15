@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/widgets/buttons.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_bloc.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_event.dart';
+import 'package:shopping_app/features/authentication/model/login_response.dart';
 import 'package:shopping_app/features/authentication/screens/register_screen.dart';
 import '../../../core/themes/light_theme.dart';
 import '../../../core/validator.dart';
@@ -109,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       MyButton.primaryButton(text: "Sign In", loading: state is AuthLoading, onTap: (){
                         if(state is AuthLoading) return;
                         if(_loginFormKey.currentState!.validate()){
-                          context.read<AuthBloc>().add(LoginEvent(loginRequest:LoginRequest(username: _emailController.text,password: _passwordController.text)));
+                           context.read<AuthBloc>().add(LoginEvent(loginRequest:LoginRequest(username: _emailController.text,password: _passwordController.text)));
                         }
                       }),
                       SizedBox(height: 10,),

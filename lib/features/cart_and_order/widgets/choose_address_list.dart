@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/themes/light_theme.dart';
+import 'package:shopping_app/features/cart_and_order/bloc/cart_bloc.dart';
+import 'package:shopping_app/features/cart_and_order/bloc/cart_event.dart';
+import 'package:shopping_app/features/cart_and_order/bloc/cart_state.dart';
 import 'package:shopping_app/features/cart_and_order/widgets/address_card.dart';
 import 'package:shopping_app/features/profile/bloc/profile_bloc.dart';
 import 'package:shopping_app/features/profile/bloc/profile_state.dart';
@@ -11,8 +14,9 @@ class ChooseAddressList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc,ProfileState>(
+    return BlocBuilder<CartBloc,CartState>(
       builder: (context,state) {
+        List<AddressModel> addresses =context.watch<ProfileBloc>().state.addresses;
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
@@ -24,11 +28,18 @@ class ChooseAddressList extends StatelessWidget {
                 ListView.builder(
                   shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: state.addresses.length,
+                    itemCount: addresses.length,
                     itemBuilder: (context,index){
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: AddressCard(address: state.addresses[index],),
+                    AddressModel address =addresses[index];
+                    return InkWell(
+                      onTap: (){
+                        context.read<CartBloc>().add(SetSelectedAddressEvent(selectedAddress: address));
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: AddressCard(address: address,isSelected: state.selectedAddress?.id==address.id,),
+                      ),
                     );
                 })
               ],

@@ -6,6 +6,7 @@ import 'package:shopping_app/core/network_project/api_client.dart';
 import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
 import 'package:shopping_app/features/authentication/bloc/auth_bloc.dart';
 import 'package:shopping_app/features/authentication/screens/login_screen.dart';
+import 'package:shopping_app/features/cart_and_order/bloc/cart_bloc.dart';
 import 'package:shopping_app/features/cart_and_order/widgets/address_card.dart';
 import 'package:shopping_app/features/home_page/bloc/home_bloc.dart';
 import 'package:shopping_app/features/home_page/screens/home_screen.dart';
@@ -24,7 +25,8 @@ void main() {
       BlocProvider(create: (_) => AuthBloc()),
       BlocProvider(create: (_) => HomeBloc()),
       BlocProvider(create: (_) => MainScreenBloc()),
-      BlocProvider(create: (_) => ProfileBloc())
+      BlocProvider(create: (_) => ProfileBloc()),
+      BlocProvider(create: (_) => CartBloc()),
     ],
     child: MyApp(),
   ));

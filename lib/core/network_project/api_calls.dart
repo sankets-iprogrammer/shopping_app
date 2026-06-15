@@ -3,6 +3,7 @@ import 'package:shopping_app/core/network_project/api_base_url.dart';
 import 'package:shopping_app/core/network_project/api_client.dart';
 import 'package:shopping_app/core/network_project/api_end_points.dart';
 import 'package:shopping_app/features/authentication/model/login_response.dart';
+import 'package:shopping_app/features/main_screen/model/user_data_model.dart';
 import '../../features/authentication/model/login_request.dart';
 import '../../features/home_page/model/product_model.dart';
 
@@ -20,11 +21,11 @@ class ApiCalls {
     return loginResponse;
   }
 
-  static Future<dynamic> getCurrentUser() async {
+  static Future<UserDataModel> getCurrentUser() async {
     Response response = await apiClient.dio.get(
       ApiBaseUrl.baseUrl + ApiEndPoints.getCurrentUser,
     );
-    return response.data;
+    return UserDataModel.fromJson(response.data); response.data;
   }
 
   static Future<void> refreshAccessToken() async {

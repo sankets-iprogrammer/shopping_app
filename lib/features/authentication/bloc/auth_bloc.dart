@@ -17,7 +17,7 @@ class AuthBloc extends Bloc<AuthEvent,AuthState>{
     on<SignupEvent>(_signup);
   }
 
-  Future<void> _login(
+  Future<LoginResponse?> _login(
       LoginEvent event,
       emit
       ) async{
@@ -27,14 +27,17 @@ class AuthBloc extends Bloc<AuthEvent,AuthState>{
       await SecureStorage.addUserLoginData(loginResponse);
       await SharedPreferencesServices.setLoggedIn(true);
       emit(LoginSuccess());
+      return loginResponse;
     }on DioException catch(e){
       if(e.error is ApiException){
         emit(AuthError((e.error as ApiException).message));
       }else{
         emit(AuthError(e.message??"Unknown Error"));
       }
+      return null;
     }catch(e){
       emit(AuthError("Unknown Error"));
+      return null;
     }
   }
 }

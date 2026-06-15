@@ -8,6 +8,7 @@ class MyButton {
     required String text,
     double width = double.infinity,
     required Function onTap,
+    double verticalPadding= 12,
   }) {
     return GestureDetector(
       onTap: () {
@@ -15,7 +16,7 @@ class MyButton {
       },
       child: Container(
         width: width,
-        padding: EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: LightTheme.secondaryBackgroundColor,
@@ -49,6 +50,7 @@ class MyButton {
     required String text,
     double width = double.infinity,
     required Function onTap,
+    double verticalPadding =12,
   }) {
     return GestureDetector(
       onTap: () {
@@ -56,7 +58,7 @@ class MyButton {
       },
       child: Container(
         width: width,
-        padding: EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),

@@ -46,6 +46,10 @@ dependencies:
   realm: ^20.2.0
   cached_network_image: ^3.4.1
   stream_transform: ^2.1.1
+  uuid: ^4.5.3
+  image_picker: ^1.2.2
+  lottie: ^3.3.3
+  google_maps_flutter: ^2.17.1
 
 
 
@@ -79,6 +83,7 @@ flutter:
     - assets/common_icons/
     - assets/offers/
     - assets/product/
+    - assets/animations/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
