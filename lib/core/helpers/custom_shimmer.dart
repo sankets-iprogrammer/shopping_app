@@ -2,8 +2,11 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
+import 'package:shopping_app/core/themes/app_theme.dart';
+
+import '../themes/theme_bloc/theme_bloc.dart';
 
 class CustomShimmer {
   static Widget getShimmerContainer({
@@ -36,11 +39,12 @@ class CustomShimmer {
   static Widget getShimmerProductCard(){
     return LayoutBuilder(builder: (context,constraints){
       double width =constraints.maxWidth;
+      AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
       return Container(
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.all(7),
         decoration: BoxDecoration(
-          color: LightTheme.primaryCardBackgroundColor,
+          color:theme.primaryCardBackgroundColor,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -50,15 +54,15 @@ class CustomShimmer {
               getShimmerContainer(
                   height: width,
                   width: width,
-                  baseColor: LightTheme.primaryBackgroundColor,
-                  highlightColor: LightTheme.primaryCardBackgroundColor,
+                  baseColor: theme.primaryBackgroundColor,
+                  highlightColor: theme.primaryCardBackgroundColor,
                   borderRadius: 10
               ),
               getShimmerContainer(
                   height: 15,
                   width: width*0.8,
-                  baseColor: LightTheme.primaryBackgroundColor,
-                  highlightColor: LightTheme.primaryCardBackgroundColor,
+                  baseColor: theme.primaryBackgroundColor,
+                  highlightColor: theme.primaryCardBackgroundColor,
                   borderRadius: 7
               ),
               Row(
@@ -67,15 +71,15 @@ class CustomShimmer {
                   getShimmerContainer(
                       height: 15,
                       width: width*0.5,
-                      baseColor: LightTheme.primaryBackgroundColor,
-                      highlightColor: LightTheme.primaryCardBackgroundColor,
+                      baseColor: theme.primaryBackgroundColor,
+                      highlightColor: theme.primaryCardBackgroundColor,
                       borderRadius: 7
                   ),
                   getShimmerContainer(
                       height: 15,
                       width: width*0.3,
-                      baseColor: LightTheme.primaryBackgroundColor,
-                      highlightColor: LightTheme.primaryCardBackgroundColor,
+                      baseColor: theme.primaryBackgroundColor,
+                      highlightColor: theme.primaryCardBackgroundColor,
                       borderRadius: 7
                   ),
                 ],

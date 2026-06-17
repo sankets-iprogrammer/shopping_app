@@ -59,7 +59,7 @@ factory ProductModel.fromJson(Map<String, dynamic> json) {
   description : json['description'],
   category : json['category'],
   price : json['price'],
-  discountPercentage : json['discountPercentage'],
+  discountPercentage :(json['discountPercentage']??0).toDouble(),
   rating :json['rating'],
   stock : json['stock'],
   tags : json['tags']?.cast<String>(),
@@ -169,6 +169,26 @@ factory ProductModel.fromRealmProduct(RealmProductModel realmProduct){
 
   );
 }
+}
+
+
+class OrderProductModel{
+  ProductModel product;
+  int quantity;
+  double price;
+  OrderProductModel({
+    required this.product,
+    required this.quantity,
+    required this.price
+});
+
+  RealmOrderProductModel toRealm(){
+    return RealmOrderProductModel(quantity, price,product: product.toRealm());
+  }
+
+  factory OrderProductModel.fromRealm(RealmOrderProductModel orderProduct){
+    return OrderProductModel(product: ProductModel.fromRealmProduct(orderProduct.product!), quantity: orderProduct.quantity, price: orderProduct.price);
+  }
 }
 
 

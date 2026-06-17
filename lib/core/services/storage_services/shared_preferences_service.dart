@@ -15,7 +15,7 @@ class SharedPreferencesServices {
   }
   static Future<void> setLoggedIn(bool value)async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool("isLoggedIn", false);
+    prefs.setBool("isLoggedIn", value);
   }
 }
 

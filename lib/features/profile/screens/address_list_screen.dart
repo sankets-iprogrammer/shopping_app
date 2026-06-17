@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
 import 'package:shopping_app/core/widgets/buttons.dart';
 import 'package:shopping_app/features/cart_and_order/widgets/address_card.dart';
 import 'package:shopping_app/features/profile/bloc/profile_bloc.dart';
@@ -9,6 +8,8 @@ import 'package:shopping_app/features/profile/bloc/profile_events.dart';
 import 'package:shopping_app/features/profile/bloc/profile_state.dart';
 import 'package:shopping_app/features/profile/screens/add_address_form_screen.dart';
 
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
 import '../../../core/widgets/custom_appbar.dart';
 import '../helpers/editing_status_enum.dart';
 import '../models/address_model.dart';
@@ -18,6 +19,7 @@ class AddressListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
     return BlocConsumer<ProfileBloc,ProfileState>(
       listener: (context,state){
         if(state.addressEditingStatus==EditingStatus.editing){
@@ -26,7 +28,7 @@ class AddressListScreen extends StatelessWidget {
       },
       builder: (context,state) {
         return Scaffold(
-          backgroundColor: LightTheme.primaryBackgroundColor,
+          backgroundColor: theme.primaryBackgroundColor,
           body: SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
@@ -35,9 +37,9 @@ class AddressListScreen extends StatelessWidget {
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      CustomAppbar.featureAppbar("Addresses",context: context,goBack: true),
+                      CustomAppbar.featureAppbar(theme: theme, "Addresses",context: context,goBack: true),
                       Padding(
-                        padding:EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
+                        padding:EdgeInsets.symmetric(horizontal: theme.pageHorizontalMargin),
                         child:
                         state.addresses.isEmpty?
                             Column(
@@ -45,10 +47,10 @@ class AddressListScreen extends StatelessWidget {
                                 SizedBox(height: 40,),
                                 Center(child: Lottie.asset('assets/animations/empty.json',height: 350,)),
                                 Text("No addresses added yet.",
-                                  style: LightTheme.pageTitle,
+                                  style: theme.pageTitle,
                                 ),
                                 SizedBox(height: 10,),
-                                Text("Add a new address to make checkout faster and easier.",style: LightTheme.productDesc,textAlign: TextAlign.center,),
+                                Text("Add a new address to make checkout faster and easier.",style: theme.productDesc,textAlign: TextAlign.center,),
                                 SizedBox(height: 20,),
                               ],
                             ):
@@ -63,7 +65,8 @@ class AddressListScreen extends StatelessWidget {
                                 child: AddressCard(address: address),
                               );
                             }),
-                      )
+                      ),
+                      SizedBox(height: 60,)
                     ]
                   ),
                 ),
@@ -72,8 +75,9 @@ class AddressListScreen extends StatelessWidget {
                     left: 0,
                     right: 0,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
+                      padding: EdgeInsets.symmetric(horizontal: theme.pageHorizontalMargin),
                       child: MyButton.primaryButton(
+                        theme: theme,
                           text: "Add Address", onTap: () {
                             context.read<ProfileBloc>().add(OpenAddressEditingScreenEvent(address: null));
                       }),

@@ -1,7 +1,5 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:shopping_app/core/helpers/common_functions.dart';
 import 'package:shopping_app/core/helpers/global_messanger.dart';
 import 'package:shopping_app/core/network_project/api_base_url.dart';
@@ -9,12 +7,7 @@ import 'package:shopping_app/core/network_project/api_calls.dart';
 import 'package:shopping_app/core/network_project/api_end_points.dart';
 import 'package:shopping_app/core/network_project/interceptor/apiRequestModel.dart';
 import 'package:shopping_app/core/services/storage_services/secure_storage.dart';
-import 'package:shopping_app/features/main_screen/bloc/main_screen_bloc.dart';
-import 'package:shopping_app/features/main_screen/screens/main_screen.dart';
 
-import '../../../features/authentication/screens/login_screen.dart';
-import '../../../features/main_screen/bloc/main_screen_events.dart';
-import '../../helpers/global_navigator.dart';
 
 class AuthInterceptor extends Interceptor {
   static bool isRefreshing = false;
@@ -22,6 +15,7 @@ class AuthInterceptor extends Interceptor {
   static List<String> authIndependentPaths = [
     ApiEndPoints.login,
     ApiEndPoints.authRefresh,
+    ApiBaseUrl.baseUrl + ApiEndPoints.login,
     ApiBaseUrl.baseUrl + ApiEndPoints.authRefresh,
   ];
   static List<ApiRequestModel> requestQueue = [];

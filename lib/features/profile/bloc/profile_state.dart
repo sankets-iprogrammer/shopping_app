@@ -2,6 +2,8 @@ import 'package:shopping_app/features/main_screen/model/user_data_model.dart';
 import 'package:shopping_app/features/profile/helpers/editing_status_enum.dart';
 import 'package:shopping_app/features/profile/models/address_model.dart';
 
+import '../models/order_model.dart';
+
 class ProfileState {
   final List<AddressModel> addresses;
   final UserDataModel? userData;
@@ -12,8 +14,10 @@ class ProfileState {
   final EditingStatus addressEditingStatus;
   final EditingStatus profileEditingStatus;
   final AddressModel? currentEditingAddress;
+  final List<OrderModel> orders;
 
   const ProfileState({
+    required this.orders,
     required this.addresses,
     required this.userData,
     required this.isProfileLoading,
@@ -27,6 +31,7 @@ class ProfileState {
 
 
   ProfileState copyWith({
+    List<OrderModel>? orders,
   List<AddressModel>? addresses,
   UserDataModel? userData, bool? isProfileLoading,
   bool? isProfileLoadingFailed,
@@ -39,6 +44,7 @@ class ProfileState {
   }
   ){
     return ProfileState(
+      orders: orders ?? this.orders,
         currentEditingAddress: currentEditingAddress,
         addressEditingStatus: addressEditingStatus ?? this.addressEditingStatus,
         profileEditingStatus: profileEditingStatus ?? this.profileEditingStatus,
@@ -54,6 +60,7 @@ class ProfileState {
 
   factory ProfileState.initial(){
     return ProfileState(
+      orders: [],
       currentEditingAddress: null,
       profileEditingStatus: EditingStatus.ready,
       addressEditingStatus: EditingStatus.ready,

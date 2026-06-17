@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
 
 class SpecificationCard extends StatelessWidget{
   final String title;
@@ -10,21 +13,22 @@ class SpecificationCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
     return Flexible(
       child: Container(
         width: width,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: LightTheme.specBorderColor),
+          border: Border.all(color: theme.specBorderColor),
           color: backGroundColor
         ),
         child: Column(
           spacing: 3,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,style: LightTheme.cardCompanyNameStyle,),
-            Text(value,style: LightTheme.productDesc.copyWith(fontWeight: FontWeight(700)),)
+            Text(title,style: theme.cardCompanyNameStyle,),
+            Text(value,style: theme.productDesc.copyWith(fontWeight: FontWeight(700)),)
           ],
         ),
       ),

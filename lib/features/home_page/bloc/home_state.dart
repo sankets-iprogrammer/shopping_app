@@ -8,14 +8,11 @@ class HomeState {
   final bool isProductListLoadingFailed;
   final bool isCategoryListLoadingFailed;
   final bool isBannerLoadingFailed;
-  final int? skip;
+  final int skip;
   final List<String> bannerImages;
-  final List<String> categories;
   final List<ProductModel> products;
   final List<ProductModel>filteredProducts;
   final String? errorMessage;
-  final List<int> favoriteProductIds;
-  final Map<int,int> productCartCount;
   final ProductModel? currentProduct;
   final bool isCurrentProductDataLoading;
   final bool isUserDataLoading;
@@ -32,16 +29,13 @@ class HomeState {
     required this.isCategoryListLoading,
     required this.isProductListLoading,
     required this.bannerImages,
-    required this.categories,
     required this.products,
-    required this.favoriteProductIds,
-    required this.productCartCount,
     required this.isUserDataLoading,
     required this.userData,
     required this.filteredProducts,
     required this.searchText,
     this.errorMessage,
-    this.skip
+    required this.skip
   });
 
   factory HomeState.initial() {
@@ -56,12 +50,9 @@ class HomeState {
       isUserDataLoading: true,
       skip:0,
       bannerImages: [],
-      categories: [],
       products: [],
       filteredProducts :[],
       userData: null,
-      favoriteProductIds: [1,4],
-      productCartCount: {},
       searchText:"",
     );
   }
@@ -78,11 +69,8 @@ class HomeState {
     bool? isUserDataLoading,
     UserDataModel? userData,
     List<String>? bannerImages,
-    List<String>? categories,
     List<ProductModel>? products,
     List<ProductModel>? filteredProducts,
-    List<int>? favoriteProductIds,
-    Map<int,int>? productCartCount,
     String? errorMessage,
     ProductModel? currentProduct,
     int? skip
@@ -101,13 +89,10 @@ class HomeState {
         isCategoryListLoading: isCategoryListLoading ??
             this.isCategoryListLoading,
         bannerImages: bannerImages ?? this.bannerImages,
-        categories: categories ?? this.categories,
         products: products ?? this.products,
         errorMessage: errorMessage,
-        favoriteProductIds: favoriteProductIds ?? this.favoriteProductIds,
-        productCartCount: productCartCount ?? this.productCartCount,
         currentProduct: currentProduct ?? this.currentProduct,
-        skip: this.skip,
+        skip: skip ?? this.skip,
         isUserDataLoading: isUserDataLoading ?? this.isUserDataLoading,
         userData: userData ?? this.userData,
         filteredProducts:filteredProducts?? this.filteredProducts,

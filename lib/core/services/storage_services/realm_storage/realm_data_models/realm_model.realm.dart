@@ -781,3 +781,375 @@ class RealmAddressModel extends _RealmAddressModel
   @override
   SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
 }
+
+class RealmPaymentMethodModel extends _RealmPaymentMethodModel
+    with RealmEntity, RealmObjectBase, RealmObject {
+  RealmPaymentMethodModel(String id, String title, String image) {
+    RealmObjectBase.set(this, 'id', id);
+    RealmObjectBase.set(this, 'title', title);
+    RealmObjectBase.set(this, 'image', image);
+  }
+
+  RealmPaymentMethodModel._();
+
+  @override
+  String get id => RealmObjectBase.get<String>(this, 'id') as String;
+  @override
+  set id(String value) => RealmObjectBase.set(this, 'id', value);
+
+  @override
+  String get title => RealmObjectBase.get<String>(this, 'title') as String;
+  @override
+  set title(String value) => RealmObjectBase.set(this, 'title', value);
+
+  @override
+  String get image => RealmObjectBase.get<String>(this, 'image') as String;
+  @override
+  set image(String value) => RealmObjectBase.set(this, 'image', value);
+
+  @override
+  Stream<RealmObjectChanges<RealmPaymentMethodModel>> get changes =>
+      RealmObjectBase.getChanges<RealmPaymentMethodModel>(this);
+
+  @override
+  Stream<RealmObjectChanges<RealmPaymentMethodModel>> changesFor([
+    List<String>? keyPaths,
+  ]) => RealmObjectBase.getChangesFor<RealmPaymentMethodModel>(this, keyPaths);
+
+  @override
+  RealmPaymentMethodModel freeze() =>
+      RealmObjectBase.freezeObject<RealmPaymentMethodModel>(this);
+
+  EJsonValue toEJson() {
+    return <String, dynamic>{
+      'id': id.toEJson(),
+      'title': title.toEJson(),
+      'image': image.toEJson(),
+    };
+  }
+
+  static EJsonValue _toEJson(RealmPaymentMethodModel value) => value.toEJson();
+  static RealmPaymentMethodModel _fromEJson(EJsonValue ejson) {
+    if (ejson is! Map<String, dynamic>) return raiseInvalidEJson(ejson);
+    return switch (ejson) {
+      {
+        'id': EJsonValue id,
+        'title': EJsonValue title,
+        'image': EJsonValue image,
+      } =>
+        RealmPaymentMethodModel(
+          fromEJson(id),
+          fromEJson(title),
+          fromEJson(image),
+        ),
+      _ => raiseInvalidEJson(ejson),
+    };
+  }
+
+  static final schema = () {
+    RealmObjectBase.registerFactory(RealmPaymentMethodModel._);
+    register(_toEJson, _fromEJson);
+    return const SchemaObject(
+      ObjectType.realmObject,
+      RealmPaymentMethodModel,
+      'RealmPaymentMethodModel',
+      [
+        SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
+        SchemaProperty('title', RealmPropertyType.string),
+        SchemaProperty('image', RealmPropertyType.string),
+      ],
+    );
+  }();
+
+  @override
+  SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
+}
+
+class RealmOrderProductModel extends _RealmOrderProductModel
+    with RealmEntity, RealmObjectBase, RealmObject {
+  RealmOrderProductModel(
+    int quantity,
+    double price, {
+    RealmProductModel? product,
+  }) {
+    RealmObjectBase.set(this, 'product', product);
+    RealmObjectBase.set(this, 'quantity', quantity);
+    RealmObjectBase.set(this, 'price', price);
+  }
+
+  RealmOrderProductModel._();
+
+  @override
+  RealmProductModel? get product =>
+      RealmObjectBase.get<RealmProductModel>(this, 'product')
+          as RealmProductModel?;
+  @override
+  set product(covariant RealmProductModel? value) =>
+      RealmObjectBase.set(this, 'product', value);
+
+  @override
+  int get quantity => RealmObjectBase.get<int>(this, 'quantity') as int;
+  @override
+  set quantity(int value) => RealmObjectBase.set(this, 'quantity', value);
+
+  @override
+  double get price => RealmObjectBase.get<double>(this, 'price') as double;
+  @override
+  set price(double value) => RealmObjectBase.set(this, 'price', value);
+
+  @override
+  Stream<RealmObjectChanges<RealmOrderProductModel>> get changes =>
+      RealmObjectBase.getChanges<RealmOrderProductModel>(this);
+
+  @override
+  Stream<RealmObjectChanges<RealmOrderProductModel>> changesFor([
+    List<String>? keyPaths,
+  ]) => RealmObjectBase.getChangesFor<RealmOrderProductModel>(this, keyPaths);
+
+  @override
+  RealmOrderProductModel freeze() =>
+      RealmObjectBase.freezeObject<RealmOrderProductModel>(this);
+
+  EJsonValue toEJson() {
+    return <String, dynamic>{
+      'product': product.toEJson(),
+      'quantity': quantity.toEJson(),
+      'price': price.toEJson(),
+    };
+  }
+
+  static EJsonValue _toEJson(RealmOrderProductModel value) => value.toEJson();
+  static RealmOrderProductModel _fromEJson(EJsonValue ejson) {
+    if (ejson is! Map<String, dynamic>) return raiseInvalidEJson(ejson);
+    return switch (ejson) {
+      {'quantity': EJsonValue quantity, 'price': EJsonValue price} =>
+        RealmOrderProductModel(
+          fromEJson(quantity),
+          fromEJson(price),
+          product: fromEJson(ejson['product']),
+        ),
+      _ => raiseInvalidEJson(ejson),
+    };
+  }
+
+  static final schema = () {
+    RealmObjectBase.registerFactory(RealmOrderProductModel._);
+    register(_toEJson, _fromEJson);
+    return const SchemaObject(
+      ObjectType.realmObject,
+      RealmOrderProductModel,
+      'RealmOrderProductModel',
+      [
+        SchemaProperty(
+          'product',
+          RealmPropertyType.object,
+          optional: true,
+          linkTarget: 'RealmProductModel',
+        ),
+        SchemaProperty('quantity', RealmPropertyType.int),
+        SchemaProperty('price', RealmPropertyType.double),
+      ],
+    );
+  }();
+
+  @override
+  SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
+}
+
+class RealmOrderModel extends _RealmOrderModel
+    with RealmEntity, RealmObjectBase, RealmObject {
+  RealmOrderModel(
+    String orderId,
+    DateTime placedOn,
+    int orderStatusIndex,
+    double productTotalPrice,
+    double totalPrice,
+    double shippingFee,
+    double taxFee, {
+    RealmPaymentMethodModel? paymentMethod,
+    RealmAddressModel? address,
+    Iterable<RealmOrderProductModel> products = const [],
+  }) {
+    RealmObjectBase.set(this, 'orderId', orderId);
+    RealmObjectBase.set(this, 'placedOn', placedOn);
+    RealmObjectBase.set(this, 'orderStatusIndex', orderStatusIndex);
+    RealmObjectBase.set(this, 'productTotalPrice', productTotalPrice);
+    RealmObjectBase.set(this, 'totalPrice', totalPrice);
+    RealmObjectBase.set(this, 'shippingFee', shippingFee);
+    RealmObjectBase.set(this, 'taxFee', taxFee);
+    RealmObjectBase.set(this, 'paymentMethod', paymentMethod);
+    RealmObjectBase.set(this, 'address', address);
+    RealmObjectBase.set<RealmList<RealmOrderProductModel>>(
+      this,
+      'products',
+      RealmList<RealmOrderProductModel>(products),
+    );
+  }
+
+  RealmOrderModel._();
+
+  @override
+  String get orderId => RealmObjectBase.get<String>(this, 'orderId') as String;
+  @override
+  set orderId(String value) => RealmObjectBase.set(this, 'orderId', value);
+
+  @override
+  DateTime get placedOn =>
+      RealmObjectBase.get<DateTime>(this, 'placedOn') as DateTime;
+  @override
+  set placedOn(DateTime value) => RealmObjectBase.set(this, 'placedOn', value);
+
+  @override
+  int get orderStatusIndex =>
+      RealmObjectBase.get<int>(this, 'orderStatusIndex') as int;
+  @override
+  set orderStatusIndex(int value) =>
+      RealmObjectBase.set(this, 'orderStatusIndex', value);
+
+  @override
+  double get productTotalPrice =>
+      RealmObjectBase.get<double>(this, 'productTotalPrice') as double;
+  @override
+  set productTotalPrice(double value) =>
+      RealmObjectBase.set(this, 'productTotalPrice', value);
+
+  @override
+  double get totalPrice =>
+      RealmObjectBase.get<double>(this, 'totalPrice') as double;
+  @override
+  set totalPrice(double value) =>
+      RealmObjectBase.set(this, 'totalPrice', value);
+
+  @override
+  double get shippingFee =>
+      RealmObjectBase.get<double>(this, 'shippingFee') as double;
+  @override
+  set shippingFee(double value) =>
+      RealmObjectBase.set(this, 'shippingFee', value);
+
+  @override
+  double get taxFee => RealmObjectBase.get<double>(this, 'taxFee') as double;
+  @override
+  set taxFee(double value) => RealmObjectBase.set(this, 'taxFee', value);
+
+  @override
+  RealmPaymentMethodModel? get paymentMethod =>
+      RealmObjectBase.get<RealmPaymentMethodModel>(this, 'paymentMethod')
+          as RealmPaymentMethodModel?;
+  @override
+  set paymentMethod(covariant RealmPaymentMethodModel? value) =>
+      RealmObjectBase.set(this, 'paymentMethod', value);
+
+  @override
+  RealmAddressModel? get address =>
+      RealmObjectBase.get<RealmAddressModel>(this, 'address')
+          as RealmAddressModel?;
+  @override
+  set address(covariant RealmAddressModel? value) =>
+      RealmObjectBase.set(this, 'address', value);
+
+  @override
+  RealmList<RealmOrderProductModel> get products =>
+      RealmObjectBase.get<RealmOrderProductModel>(this, 'products')
+          as RealmList<RealmOrderProductModel>;
+  @override
+  set products(covariant RealmList<RealmOrderProductModel> value) =>
+      throw RealmUnsupportedSetError();
+
+  @override
+  Stream<RealmObjectChanges<RealmOrderModel>> get changes =>
+      RealmObjectBase.getChanges<RealmOrderModel>(this);
+
+  @override
+  Stream<RealmObjectChanges<RealmOrderModel>> changesFor([
+    List<String>? keyPaths,
+  ]) => RealmObjectBase.getChangesFor<RealmOrderModel>(this, keyPaths);
+
+  @override
+  RealmOrderModel freeze() =>
+      RealmObjectBase.freezeObject<RealmOrderModel>(this);
+
+  EJsonValue toEJson() {
+    return <String, dynamic>{
+      'orderId': orderId.toEJson(),
+      'placedOn': placedOn.toEJson(),
+      'orderStatusIndex': orderStatusIndex.toEJson(),
+      'productTotalPrice': productTotalPrice.toEJson(),
+      'totalPrice': totalPrice.toEJson(),
+      'shippingFee': shippingFee.toEJson(),
+      'taxFee': taxFee.toEJson(),
+      'paymentMethod': paymentMethod.toEJson(),
+      'address': address.toEJson(),
+      'products': products.toEJson(),
+    };
+  }
+
+  static EJsonValue _toEJson(RealmOrderModel value) => value.toEJson();
+  static RealmOrderModel _fromEJson(EJsonValue ejson) {
+    if (ejson is! Map<String, dynamic>) return raiseInvalidEJson(ejson);
+    return switch (ejson) {
+      {
+        'orderId': EJsonValue orderId,
+        'placedOn': EJsonValue placedOn,
+        'orderStatusIndex': EJsonValue orderStatusIndex,
+        'productTotalPrice': EJsonValue productTotalPrice,
+        'totalPrice': EJsonValue totalPrice,
+        'shippingFee': EJsonValue shippingFee,
+        'taxFee': EJsonValue taxFee,
+      } =>
+        RealmOrderModel(
+          fromEJson(orderId),
+          fromEJson(placedOn),
+          fromEJson(orderStatusIndex),
+          fromEJson(productTotalPrice),
+          fromEJson(totalPrice),
+          fromEJson(shippingFee),
+          fromEJson(taxFee),
+          paymentMethod: fromEJson(ejson['paymentMethod']),
+          address: fromEJson(ejson['address']),
+          products: fromEJson(ejson['products']),
+        ),
+      _ => raiseInvalidEJson(ejson),
+    };
+  }
+
+  static final schema = () {
+    RealmObjectBase.registerFactory(RealmOrderModel._);
+    register(_toEJson, _fromEJson);
+    return const SchemaObject(
+      ObjectType.realmObject,
+      RealmOrderModel,
+      'RealmOrderModel',
+      [
+        SchemaProperty('orderId', RealmPropertyType.string),
+        SchemaProperty('placedOn', RealmPropertyType.timestamp),
+        SchemaProperty('orderStatusIndex', RealmPropertyType.int),
+        SchemaProperty('productTotalPrice', RealmPropertyType.double),
+        SchemaProperty('totalPrice', RealmPropertyType.double),
+        SchemaProperty('shippingFee', RealmPropertyType.double),
+        SchemaProperty('taxFee', RealmPropertyType.double),
+        SchemaProperty(
+          'paymentMethod',
+          RealmPropertyType.object,
+          optional: true,
+          linkTarget: 'RealmPaymentMethodModel',
+        ),
+        SchemaProperty(
+          'address',
+          RealmPropertyType.object,
+          optional: true,
+          linkTarget: 'RealmAddressModel',
+        ),
+        SchemaProperty(
+          'products',
+          RealmPropertyType.object,
+          linkTarget: 'RealmOrderProductModel',
+          collectionType: RealmCollectionType.list,
+        ),
+      ],
+    );
+  }();
+
+  @override
+  SchemaObject get objectSchema => RealmObjectBase.getSchema(this) ?? schema;
+}

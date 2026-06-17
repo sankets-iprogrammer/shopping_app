@@ -11,11 +11,14 @@ import 'package:shopping_app/features/profile/bloc/profile_state.dart';
 import 'package:shopping_app/features/profile/helpers/editing_status_enum.dart';
 import 'package:shopping_app/features/profile/models/address_model.dart';
 
-import '../../../core/themes/light_theme.dart';
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
 import '../bloc/profile_bloc.dart';
 
 class AddAddressFormScreen extends StatefulWidget {
-  const AddAddressFormScreen({super.key});
+  final bool newAddress;
+  const AddAddressFormScreen({super.key,this.newAddress=false});
+
 
   @override
   State<AddAddressFormScreen> createState() => _AddAddressFormScreenState();
@@ -33,20 +36,24 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
   AddressModel? address;
   @override
   void initState() {
-    address= context.read<ProfileBloc>().state.currentEditingAddress;
-    nameController.text=address?.name??"";
-    numberController.text=address?.number.toString()??"";
-    streetController.text=address?.street??"";
-    postalCodeController.text=address?.postalCode.toString()??"";
-    cityController.text=address?.city??"";
-    stateController.text=address?.state??"";
-    countryController.text=address?.country??"";
+    if(!widget.newAddress){
+      address= context.read<ProfileBloc>().state.currentEditingAddress;
+      nameController.text=address?.name??"";
+      numberController.text=address?.number.toString()??"";
+      streetController.text=address?.street??"";
+      postalCodeController.text=address?.postalCode.toString()??"";
+      cityController.text=address?.city??"";
+      stateController.text=address?.state??"";
+      countryController.text=address?.country??"";
+    }
+
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
     return Scaffold(
-      backgroundColor: LightTheme.primaryBackgroundColor,
+      backgroundColor: theme.primaryBackgroundColor,
       body: BlocListener<ProfileBloc,ProfileState>(
         listener: (context,state)async{
           if(state.addressEditingStatus==EditingStatus.success){
@@ -64,9 +71,9 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      CustomAppbar.featureAppbar(address==null?"Add Address":"Edit Address", context: context,goBack: true),
+                      CustomAppbar.featureAppbar(theme: theme, address==null?"Add Address":"Edit Address", context: context,goBack: true),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin,vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: theme.pageHorizontalMargin,vertical: 10),
                         child: Form(
                           key :_loginFormKey,
                           child: Column(
@@ -75,11 +82,12 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                               SizedBox(
                                 width: double.infinity,
                                   child: Image.asset("assets/common_icons/location_image.png",fit: BoxFit.fill,)),
-                              Text("Add your delivery address to ensure your orders reach the right location. You can update or manage your saved addresses anytime.",style: LightTheme.productDesc,),
+                              Text("Add your delivery address to ensure your orders reach the right location. You can update or manage your saved addresses anytime.",style: theme.productDesc,),
                               TextFormField(
                                 maxLength: 30,
+                                style: theme.cardPriceStyle,
                                 controller:nameController,
-                                decoration: LightTheme.textFieldDecoration(label: "Name", hintText:"Name eg. Home, Work, etc...",iconData:Icons.home_outlined),
+                                decoration: theme.textFieldDecoration(label: "Name", hintText:"Name eg. Home, Work, etc...",iconData:Icons.home_outlined),
                                 validator: (value){
                                   if(value?.trim().isEmpty??true){
                                     return "This field is mandatory!";
@@ -89,7 +97,7 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                               TextFormField(
                                 maxLength: 10,
                                 controller:numberController,
-                                decoration: LightTheme.textFieldDecoration(label: "Mobile Number", hintText:"Mobile Number",iconData:Icons.call_outlined),
+                                decoration: theme.textFieldDecoration(label: "Mobile Number", hintText:"Mobile Number",iconData:Icons.call_outlined),
                                 validator: (value){
                                   if(value?.trim().isEmpty??true){
                                     return "This field is mandatory!";
@@ -103,7 +111,7 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                                     child: TextFormField(
                                       maxLength: 30,
                                       controller:streetController,
-                                      decoration: LightTheme.textFieldDecoration(label: "House & Street", hintText:"House & Street",iconData:Icons.house_outlined),
+                                      decoration: theme.textFieldDecoration(label: "House & Street", hintText:"House & Street",iconData:Icons.house_outlined),
                                       validator: (value){
                                         if(value?.trim().isEmpty??true){
                                           return "This field is mandatory!";
@@ -115,7 +123,7 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                                     child: TextFormField(
                                       maxLength: 30,
                                       controller:postalCodeController,
-                                      decoration: LightTheme.textFieldDecoration(label: "Postal Code", hintText:"Postal Code",iconData:Icons.local_post_office_outlined),
+                                      decoration: theme.textFieldDecoration(label: "Postal Code", hintText:"Postal Code",iconData:Icons.local_post_office_outlined),
                                       validator: (value){
                                         if(value?.trim().isEmpty??true){
                                           return "This field is mandatory!";
@@ -132,7 +140,7 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                                     child: TextFormField(
                                       maxLength: 30,
                                       controller:cityController,
-                                      decoration: LightTheme.textFieldDecoration(label: "City", hintText:"City",iconData:Icons.location_city_outlined),
+                                      decoration: theme.textFieldDecoration(label: "City", hintText:"City",iconData:Icons.location_city_outlined),
                                       validator: (value){
                                         if(value?.trim().isEmpty??true){
                                           return "This field is mandatory!";
@@ -144,7 +152,7 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                                     child: TextFormField(
                                       maxLength: 30,
                                       controller:stateController,
-                                      decoration: LightTheme.textFieldDecoration(label: "State", hintText:"State",iconData:Icons.network_cell_outlined),
+                                      decoration: theme.textFieldDecoration(label: "State", hintText:"State",iconData:Icons.network_cell_outlined),
                                       validator: (value){
                                         if(value?.trim().isEmpty??true){
                                           return "This field is mandatory!";
@@ -157,7 +165,7 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                               TextFormField(
                                 maxLength: 30,
                                 controller:countryController,
-                                decoration: LightTheme.textFieldDecoration(label: "Country", hintText:"Country",iconData:Icons.network_cell_outlined),
+                                decoration: theme.textFieldDecoration(label: "Country", hintText:"Country",iconData:Icons.network_cell_outlined),
                                 validator: (value){
                                   if(value?.trim().isEmpty??true){
                                     return "This field is mandatory!";
@@ -177,8 +185,8 @@ class _AddAddressFormScreenState extends State<AddAddressFormScreen> {
                     right: 0,
                     bottom: 20,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: LightTheme.pageHorizontalMargin),
-                      child: MyButton.primaryButton(text: "Save", onTap: ()async{
+                      padding: EdgeInsets.symmetric(horizontal: theme.pageHorizontalMargin),
+                      child: MyButton.primaryButton(theme: theme, text: "Save", onTap: ()async{
                         if(_loginFormKey.currentState!.validate()){
                           AddressModel savedAddress =AddressModel(
                               id: address?.id?? UUidGenerator.getUniqueKey(),

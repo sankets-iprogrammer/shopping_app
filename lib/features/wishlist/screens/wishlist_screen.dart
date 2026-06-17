@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
 import 'package:shopping_app/core/widgets/custom_appbar.dart';
 import 'package:shopping_app/features/home_page/bloc/home_bloc.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
+import '../../cart_and_order/bloc/cart_bloc.dart';
+import '../../cart_and_order/bloc/cart_state.dart';
 import '../../home_page/components/product_card.dart';
 import '../../home_page/model/product_model.dart';
 
@@ -12,9 +15,10 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
+    return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
-        final List<ProductModel> favoriteProducts = state.products.where((
+        final List<ProductModel> favoriteProducts = context.read<HomeBloc>().state.products.where((
           ProductModel product,
         ) {
           return state.favoriteProductIds.contains(product.id);
@@ -22,10 +26,10 @@ class WishlistScreen extends StatelessWidget {
         return SingleChildScrollView(
           child: Column(
             children: [
-              CustomAppbar.featureAppbar("Wishlist",context: context),
+              CustomAppbar.featureAppbar("Wishlist",theme: theme,context: context),
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: LightTheme.pageHorizontalMargin,
+                  horizontal: theme.pageHorizontalMargin,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -38,14 +42,14 @@ class WishlistScreen extends StatelessWidget {
                             child: Column(
                               spacing: 10,
                               children: [
-                                Text("Wishlist is Empty",style: LightTheme.productDesc),
+                                Text("Wishlist is Empty",style: theme.productDesc),
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                                   decoration: BoxDecoration(
-                                    color: LightTheme.primaryCardBackgroundColor,
+                                    color: theme.primaryCardBackgroundColor,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Text("Continue Shopping",style: LightTheme.cardProductNameStyle,),
+                                  child: Text("Continue Shopping",style: theme.cardProductNameStyle,),
                                 )
                               ],
                             ),
@@ -64,7 +68,6 @@ class WishlistScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               return ProductCard(
                                 product: favoriteProducts[index],
-                                state: context.read<HomeBloc>().state,
                               );
                             },
                           ),

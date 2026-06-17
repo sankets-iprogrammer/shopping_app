@@ -13,8 +13,7 @@ class ErrorInterceptor extends Interceptor{
         handler.next(err.copyWith(error: ApiException("Connection timeout")));
         break;
       case DioExceptionType.badResponse:
-        // log(err.message.toString());
-        handler.next(err.copyWith(error: ApiException("Bad Response")));
+        handler.next(err.copyWith(error: ApiException(err.response?.data["message"].toString()??"Bad Response")));
         break;
       case DioExceptionType.connectionError:
         log(err.type.toString());

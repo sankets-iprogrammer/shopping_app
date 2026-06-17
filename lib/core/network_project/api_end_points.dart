@@ -5,4 +5,5 @@ class ApiEndPoints {
   static String getProductsList ="/products";
   static String getCategoryList ="/products/category-list";
   static String getProductsData ="/products";
+  static String getCategoryProduct ="/products/category/";
   }

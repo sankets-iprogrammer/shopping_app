@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
+
+import '../themes/app_theme.dart';
 
 class GlobalMessenger {
   static GlobalKey<ScaffoldMessengerState> globalMessengerKey =GlobalKey<ScaffoldMessengerState>();
@@ -13,10 +14,14 @@ class GlobalMessenger {
         duration: Duration(days: 1),
           content: Row(
         children: [
-          Icon(Icons.error,color: LightTheme.errorTextColor,size: 25,),
+          Icon(Icons.error,color: Colors.red,size: 25,),
           SizedBox(width: 5,),
           Expanded(child: Text(message,overflow: TextOverflow.ellipsis,style:
-              LightTheme.impSnackBarText
+         TextStyle(
+           color: Colors.white,
+           fontSize:16,
+           fontWeight: FontWeight(700),
+         )
             )),
           InkWell(
             onTap: (){
@@ -26,10 +31,14 @@ class GlobalMessenger {
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 2,horizontal: 5),
               decoration: BoxDecoration(
-                border: Border.all(color: LightTheme.impSnackBarOnBackgroundColor),
+                border: Border.all(color: Colors.white),
                 borderRadius: BorderRadius.circular(10)
               ),
-                child: Text(optionLabel,style: LightTheme.impSnackBarText.copyWith(fontSize: 14),)),
+                child: Text(optionLabel,style: TextStyle(
+                  color: Colors.white,
+                  fontSize:16,
+                  fontWeight: FontWeight(700),
+                ).copyWith(fontSize: 14),)),
           ),
         ],
       ) )

@@ -68,6 +68,38 @@ class _RealmAddressModel{
 }
 
 
+@RealmModel()
+class _RealmPaymentMethodModel{
+  @PrimaryKey()
+  late String id;
+  late String title;
+  late String image;
+}
+
+
+@RealmModel()
+class _RealmOrderProductModel{
+  late _RealmProductModel? product;
+  late int quantity;
+  late double price;
+}
+
+
+@RealmModel()
+class _RealmOrderModel{
+  late String orderId;
+  late DateTime placedOn;
+  late int orderStatusIndex;
+  late double productTotalPrice;
+  late double totalPrice;
+  late double shippingFee;
+  late double taxFee;
+  late _RealmPaymentMethodModel? paymentMethod;
+  late _RealmAddressModel? address;
+  late List<_RealmOrderProductModel> products;
+}
+
+
 
 
 

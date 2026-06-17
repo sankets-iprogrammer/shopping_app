@@ -14,31 +14,28 @@ import 'package:shopping_app/features/main_screen/model/user_data_model.dart';
 class HomeBloc extends Bloc<HomeEvent,HomeState>{
   HomeBloc():super(HomeState.initial()){
     on<LoadProductListEvent>(_loadProductList);
-    on<LoadCategoryListEvent>(_loadCategoryList);
-    on<ToggleFavoriteIDEvent>(_toggleFavoriteID);
-    on<ChangeProductCartCountEvent>(_changeProductCartCount);
     on<LoadProductDataEvent>(_loadProductData);
     on<LoadUserDataEvent>(_loadUserData);
     on<SearchProductEvent>(_searchProductEvent,
     transformer: debounce(const Duration(milliseconds: 500)));
   }
   Future<void> _loadProductList(LoadProductListEvent event,emit)async{
-    emit(state.copyWith(isProductListLoading: true,isBannerLoading: true));
+    emit(state.copyWith(isProductListLoading: true,isBannerLoading: true,products:event.firstTime?[]:null, filteredProducts:event.firstTime?[]:null,skip: 0));
     try{
-      List<ProductModel> products=await ApiCalls.getAllProductsList(skip: 0);
-      ApiCalls.getCurrentUser();
-      // ApiCalls.getCurrentUser();
-      // ApiCalls.getCurrentUser();
-      // ApiCalls.getCurrentUser();
-
-      log(products.toString());
+      int skip=state.skip;
+      List<ProductModel> newProducts=await ApiCalls.getAllProductsList(skip: skip);
+      List<ProductModel> allProducts= List.from(state.products);
+      allProducts.addAll(newProducts);
+      log("current products are : ${allProducts.length}");
       emit(state.copyWith(
-        products: products,
+        products: skip==0?newProducts:allProducts,
         isProductListLoading: false,
         isBannerLoading: false,
-        filteredProducts: event.skip==0?products :null
+        filteredProducts:  allProducts,
+        searchText: '',
+        skip: skip+10
       ));
-      RealmDBStorage.saveProducts(products);
+      RealmDBStorage.saveProducts(newProducts);
       log("products saved");
     } on DioException catch(e){
       if(e.type == DioExceptionType.connectionError){
@@ -47,57 +44,35 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
         log(products.toString());
         emit(state.copyWith(
             products: products,
+            filteredProducts: products,
             isProductListLoading: false,
             isBannerLoading: false,
-            filteredProducts: event.skip==0?products :null
+            errorMessage: "You're offline. Some information may not be up to date.",
+            skip: 0
         ));
-        emit(state.copyWith(errorMessage: "You're offline. Some information may not be up to date.",isProductListLoading: false));
+      }else{
+        if(e.error is ApiException){
+          emit(state.copyWith(
+            isProductListLoadingFailed: true,
+              isProductListLoading: false,
+              isBannerLoading: false,
+              errorMessage: (e as ApiException).message,
+          ));
+        }else{
+          emit(state.copyWith(
+            isProductListLoadingFailed: true,
+            isProductListLoading: false,
+            isBannerLoading: false,
+            errorMessage: "Unknown error - Failed to load products",
+          ));
+        }
       }
     } catch(e){
-      emit(state.copyWith(errorMessage: "Unknown Error - Failed to load products",isProductListLoadingFailed: true,isProductListLoading: false));
+      emit(state.copyWith(errorMessage: "Unknown error - Failed to load products",isProductListLoadingFailed: true,isProductListLoading: false,isBannerLoading: false,));
       log(e.toString());
     }
   }
-  Future<void> _loadCategoryList(LoadCategoryListEvent event,emit)async{
-    emit(state.copyWith(isCategoryListLoading: true));
-    try{
-      List<String> categoryList =await ApiCalls.getCategoryList();
-      log(categoryList.toString());
-      emit(state.copyWith(categories: categoryList,isCategoryListLoading: false));
 
-    }
-    on ApiException catch(e){
-      emit(state.copyWith(errorMessage: e.message,isCategoryListLoadingFailed: true));
-    } catch(e){
-      emit(state.copyWith(errorMessage: "Unknown Error - Failed to load categories",isCategoryListLoadingFailed: true));
-      log(e.toString());
-    }
-  }
-  void _toggleFavoriteID(ToggleFavoriteIDEvent event,emit){
-    List<int> favoriteProductIds= List.from(state.favoriteProductIds);
-    if(state.favoriteProductIds.contains(event.id)){
-      favoriteProductIds.remove(event.id);
-    }else{
-      favoriteProductIds.add(event.id);
-    }
-    emit(state.copyWith(favoriteProductIds: favoriteProductIds));
-  }
-
-  void _changeProductCartCount(ChangeProductCartCountEvent event,emit){
-    Map<int,int> productCartCount=Map.from(state.productCartCount);
-    int count=productCartCount[event.id]??0;
-    log(count.toString());
-    if(event.desc){
-      productCartCount[event.id]=--count;
-      if(count<1){
-        productCartCount.remove(event.id);
-      }
-    }else{
-      productCartCount[event.id]=++count;
-    }
-    emit(state.copyWith(productCartCount: productCartCount));
-
-  }
   void _loadProductData(LoadProductDataEvent event,emit)async{
     log("in the _loadProductData");
     try{
@@ -105,10 +80,15 @@ class HomeBloc extends Bloc<HomeEvent,HomeState>{
       ProductModel product =await ApiCalls.getProductData(event.id);
       log(product.toString());
       emit(state.copyWith(currentProduct: product,isCurrentProductDataLoading:false));
+      RealmDBStorage.saveProducts([product]);
     }
-    on ApiException catch(e){
-      log(e.message);
-      emit(state.copyWith(errorMessage: e.message));
+    on DioException catch(e){
+      if (e.type == DioExceptionType.connectionError) {
+        ProductModel? product = RealmDBStorage.getProduct(event.id);
+        log("product from storage");
+        log(product.toString());
+        emit(state.copyWith(currentProduct: product,isCurrentProductDataLoading:false,errorMessage: "You're offline. Some information may not be up to date."));
+      }
     } catch(e){
       emit(state.copyWith(errorMessage: "Unknown Error - Failed To Load"));
       log(e.toString());

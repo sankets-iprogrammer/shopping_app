@@ -1,6 +1,6 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
 import 'package:shopping_app/features/cart_and_order/bloc/cart_bloc.dart';
 import 'package:shopping_app/features/cart_and_order/bloc/cart_event.dart';
 import 'package:shopping_app/features/cart_and_order/bloc/cart_state.dart';
@@ -11,11 +11,14 @@ import 'package:shopping_app/features/profile/bloc/profile_bloc.dart';
 import 'package:shopping_app/features/profile/bloc/profile_state.dart';
 import 'package:shopping_app/features/profile/models/address_model.dart';
 
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
+
 class ChoosePaymentMethodList extends StatelessWidget {
   const ChoosePaymentMethodList({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
     return BlocBuilder<CartBloc,CartState>(
         builder: (context,state) {
           return SingleChildScrollView(
@@ -24,7 +27,7 @@ class ChoosePaymentMethodList extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Select Payment Option",style: LightTheme.pageTitle,),
+                  Text("Select Payment Option",style: theme.pageTitle,),
                   SizedBox(height: 10,),
                   ListView.builder(
                       shrinkWrap: true,

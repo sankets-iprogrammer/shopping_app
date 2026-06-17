@@ -1,25 +1,29 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
-import 'package:shopping_app/core/themes/theme_manager.dart';
+import 'package:shopping_app/core/themes/app_theme.dart';
+
 
 class MyButton {
   static Widget primaryButton({
+    Widget? widget,
     bool loading = false,
-    required String text,
+    String text ="",
     double width = double.infinity,
     required Function onTap,
     double verticalPadding= 12,
+    required AppTheme theme,
   }) {
     return GestureDetector(
       onTap: () {
-        onTap();
+      onTap();
       },
       child: Container(
         width: width,
         padding: EdgeInsets.symmetric(vertical: verticalPadding),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: LightTheme.secondaryBackgroundColor,
+          color: theme.secondaryBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: loading
@@ -27,15 +31,15 @@ class MyButton {
                 height: 25,
                 width: 25,
                 child: CircularProgressIndicator(
-                  color: LightTheme.secondaryOnBackgroundColor,
+                  color: theme.secondaryOnBackgroundColor,
                 ),
               )
-            : SizedBox(
+            : widget?? SizedBox(
                 height: 25,
                 child: Text(
                   text,
-                  style: LightTheme.textStyle.copyWith(
-                    color: LightTheme.secondaryOnBackgroundColor,
+                  style: theme.textStyle.copyWith(
+                    color: theme.secondaryOnBackgroundColor,
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
                   ),
@@ -51,6 +55,7 @@ class MyButton {
     double width = double.infinity,
     required Function onTap,
     double verticalPadding =12,
+    required AppTheme theme,
   }) {
     return GestureDetector(
       onTap: () {
@@ -62,22 +67,22 @@ class MyButton {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: LightTheme.primaryOnBackgroundColor),
+          border: Border.all(color: theme.primaryOnBackgroundColor),
         ),
         child: loading
             ? SizedBox(
           height: 25,
           width: 25,
           child: CircularProgressIndicator(
-            color: LightTheme.primaryOnBackgroundColor,
+            color: theme.primaryOnBackgroundColor,
           ),
         )
             : SizedBox(
           height: 25,
           child: Text(
             text,
-            style: LightTheme.textStyle.copyWith(
-              color: LightTheme.primaryOnBackgroundColor,
+            style: theme.textStyle.copyWith(
+              color: theme.primaryOnBackgroundColor,
               fontWeight: FontWeight.w700,
               fontSize: 16,
             ),
@@ -87,11 +92,12 @@ class MyButton {
     );
   }
 
-  static Widget carouselNavigators(
-    double height,
-    double width,
-    int activeIndex,
-    int count,
+  static Widget carouselNavigators({
+    required double height,
+    required double width,
+    required int activeIndex,
+    required int count,
+      required AppTheme theme}
   ) {
     return SizedBox(
       height: height,
@@ -106,8 +112,8 @@ class MyButton {
                 duration: Duration(milliseconds: 700),
                 decoration: BoxDecoration(
                   color: i == activeIndex
-                      ? LightTheme.secondaryBackgroundColor
-                      : LightTheme.disabledBackgroundColor,
+                      ? theme.secondaryBackgroundColor
+                      : theme.disabledBackgroundColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),

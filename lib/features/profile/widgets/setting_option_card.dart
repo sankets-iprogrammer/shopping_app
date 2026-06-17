@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
 
 class SettingOptionCard extends StatelessWidget {
   final IconData iconsData;
@@ -9,6 +12,7 @@ class SettingOptionCard extends StatelessWidget {
   const SettingOptionCard({super.key,required this.iconsData,required this.tittle,required this.description,required this.onTap});
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
     return InkWell(
       onTap: (){
         onTap();
@@ -18,7 +22,7 @@ class SettingOptionCard extends StatelessWidget {
         children: [
           SizedBox(width: 5,),
           Icon(iconsData,
-            color: LightTheme.secondaryBackgroundColor,
+            color: theme.secondaryBackgroundColor,
             size: 30,
           ),
           Column(
@@ -26,10 +30,10 @@ class SettingOptionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(tittle,
-                  style:LightTheme.sectionTitle
+                  style:theme.sectionTitle
               ),
               Text(description,
-                  style:LightTheme.cardCompanyNameStyle
+                  style:theme.cardCompanyNameStyle
               )
             ],
           )

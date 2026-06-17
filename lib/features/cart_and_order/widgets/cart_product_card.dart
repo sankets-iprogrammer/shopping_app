@@ -1,25 +1,33 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
+import 'package:shopping_app/core/helpers/cached_network_image.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
 import 'package:shopping_app/features/home_page/model/product_model.dart';
 
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
 import '../../home_page/bloc/home_bloc.dart';
 import '../../home_page/bloc/home_event.dart';
 import '../../../core/helpers/helper_functions.dart';
+import '../bloc/cart_bloc.dart';
+import '../bloc/cart_event.dart';
+import '../bloc/cart_state.dart';
 
 class CartProductCard extends StatelessWidget {
   final ProductModel product;
-  const CartProductCard({super.key, required this.product});
+  final double? fixedPrice;
+  final int? productQuantity;
+  const CartProductCard({super.key, required this.product ,this.fixedPrice, this.productQuantity});
 
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       padding: EdgeInsets.all(7),
       decoration: BoxDecoration(
-        color: LightTheme.primaryCardBackgroundColor,
+        color: theme.primaryCardBackgroundColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
@@ -30,20 +38,11 @@ class CartProductCard extends StatelessWidget {
             width: 80,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              color: LightTheme.primaryBackgroundColor,
+              color: theme.primaryBackgroundColor,
             ),
               child: product.images == null || product.images!.isEmpty ?
               Image.asset('assets/product/iphone.png', fit: BoxFit.fill,) :
-              CachedNetworkImage(imageUrl: product.images![0],
-                placeholder: (context, url) {
-                  return Icon(Icons.broken_image, size: 30,
-                    color: LightTheme.primaryCardBackgroundColor,);
-                },
-                errorWidget: (context, url, error) {
-                  return Icon(Icons.broken_image, size: 30,
-                    color: LightTheme.primaryCardBackgroundColor,);
-                },
-              )
+                  MyCachedNetworkImage(imageUrl: product.images![0]),
           ),
           Expanded(
             child: Column(
@@ -51,18 +50,19 @@ class CartProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(product.brand??"----",
-                  style: LightTheme.cardCompanyNameStyle,
+                  style: theme.cardCompanyNameStyle,
                 ),
                 Text(product.title??"Product Name",
-                  style: LightTheme.cardProductNameStyle,
+                  style: theme.cardProductNameStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
+                productQuantity!=null?Text("Total Quantity : $productQuantity",style:  theme.cardProductNameStyle,):
                 Row(
                   spacing: 10,
                   children: [
                     InkWell(
                       onTap: (){
-                        context.read<HomeBloc>().add(
+                        context.read<CartBloc>().add(
                           ChangeProductCartCountEvent(
                             id: product.id,
                             desc: true,
@@ -73,20 +73,20 @@ class CartProductCard extends StatelessWidget {
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: LightTheme.primaryBackgroundColor,
+                          color: theme.primaryBackgroundColor,
                         ),
-                        child: Icon(Icons.remove,color: LightTheme.primaryOnBackgroundColor,size: 15),
+                        child: Icon(Icons.remove,color: theme.primaryOnBackgroundColor,size: 15),
                       ) ,
                     ),
-                    BlocBuilder<HomeBloc,HomeState>(builder: (context,state){
+                    BlocBuilder<CartBloc,CartState>(builder: (context,state){
                       return Text(state.productCartCount[product
                           .id]
-                          .toString(),);
+                          .toString(),style: theme.productDesc,);
                     }),
 
                     InkWell(
                       onTap: () {
-                        context.read<HomeBloc>().add(
+                        context.read<CartBloc>().add(
                           ChangeProductCartCountEvent(
                             id: product.id,
                           ),
@@ -96,9 +96,9 @@ class CartProductCard extends StatelessWidget {
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: LightTheme.secondaryBackgroundColor,
+                          color: theme.secondaryBackgroundColor,
                         ),
-                        child: Icon(Icons.add,color: LightTheme.secondaryOnBackgroundColor,size: 15,),
+                        child: Icon(Icons.add,color: theme.secondaryOnBackgroundColor,size: 15,),
                       ) ,
                     ),
                   ],
@@ -108,11 +108,12 @@ class CartProductCard extends StatelessWidget {
           ),
           Row(
             children: [
-              Text("\$${product.price}", style: LightTheme.cardCurrentPriceStyle),
+              fixedPrice!=null?SizedBox():
+              Text("\$${product.price}", style: theme.cardCurrentPriceStyle),
               SizedBox(width: 10),
               Text(
-                "\$${HelperFunctions.calculateDiscountedPrice(product.price,product.discountPercentage)}",
-                style: LightTheme.cardPriceStyle,
+                "\$${fixedPrice?? HelperFunctions.calculateDiscountedPrice(product.price,product.discountPercentage)}",
+                style: theme.cardPriceStyle,
               ),
               SizedBox(width: 10),
             ],

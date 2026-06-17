@@ -1,14 +1,15 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/widgets/buttons.dart';
 
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
 import '../../../core/validator.dart';
 
-
-
 void updateNameDataBottomSheet(BuildContext context){
+  final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
   showModalBottomSheet(
     isScrollControlled: true,
     useSafeArea: true,
@@ -22,7 +23,7 @@ void updateNameDataBottomSheet(BuildContext context){
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Change Name",style: LightTheme.pageTitle,),
+          Text("Change Name",style: theme.pageTitle,),
           Text("Update your name to keep your profile accurate and personalized"),
           SizedBox(height: 30,),
           Row(
@@ -32,7 +33,7 @@ void updateNameDataBottomSheet(BuildContext context){
                 child: TextFormField(
                   maxLength: 10,
                   controller:_firstNameController,
-                  decoration: LightTheme.textFieldDecoration(label: "First Name", hintText:"First Name",iconData:Icons.person_3_outlined),
+                  decoration: theme.textFieldDecoration(label: "First Name", hintText:"First Name",iconData:Icons.person_3_outlined),
                   validator: (value){
                     if(value?.trim().isEmpty??true){
                       return "This field is mandatory!";
@@ -44,7 +45,7 @@ void updateNameDataBottomSheet(BuildContext context){
                 child: TextFormField(
                   maxLength: 10,
                   controller:_lastNameController,
-                  decoration: LightTheme.textFieldDecoration(label: "Last Name", hintText:"Last Name",iconData:Icons.person_3_outlined),
+                  decoration: theme.textFieldDecoration(label: "Last Name", hintText:"Last Name",iconData:Icons.person_3_outlined),
                   validator: (value){
                     if(value?.trim().isEmpty??true){
                       return "This field is mandatory!";
@@ -55,7 +56,7 @@ void updateNameDataBottomSheet(BuildContext context){
             ],
           ),
           SizedBox(height: 20,),
-          MyButton.primaryButton(text: "Save", onTap: (){
+          MyButton.primaryButton(theme:theme,text: "Save", onTap: (){
           })
         ],
       ),
@@ -135,7 +136,9 @@ void updateTextFieldDataBottomSheet(
       required IconData iconData,
       required String? Function(String?) validator,
     }){
+  final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
   showModalBottomSheet(
+    backgroundColor: theme.primaryBackgroundColor,
       isScrollControlled: true,
       useSafeArea: true,
       context: context,
@@ -148,19 +151,20 @@ void updateTextFieldDataBottomSheet(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title,style: LightTheme.pageTitle,),
-              Text(desc),
+              Text(title,style: theme.pageTitle,),
+              Text(desc,style: theme.cardCompanyNameStyle,),
               SizedBox(height: 30,),
                   TextFormField(
+                    style: theme.cardProductNameStyle,
                     maxLength: 10,
                     controller:_textFieldController,
-                    decoration: LightTheme.textFieldDecoration(label: label, hintText:hintText,iconData:iconData),
+                    decoration: theme.textFieldDecoration(label: label, hintText:hintText,iconData:iconData),
                     validator: (value){
                      return validator(value);
                     }
                   ),
               SizedBox(height: 20,),
-              MyButton.primaryButton(text: "Save", onTap: (){
+              MyButton.primaryButton(theme: theme, text: "Save", onTap: (){
               })
             ],
           ),

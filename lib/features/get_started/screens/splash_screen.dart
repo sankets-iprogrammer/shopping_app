@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_app/features/authentication/screens/login_screen.dart';
+import 'package:shopping_app/features/home_page/screens/home_screen.dart';
+import 'package:shopping_app/features/main_screen/screens/main_screen.dart';
 
 
 import 'onboarding_screen.dart';
@@ -29,6 +32,12 @@ class _SplashScreenState extends State<SplashScreen> {
           listener: (context,state){
             if(state is NavigateToOnboardingScreen){
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>OnboardingScreen()));
+            }
+            if(state is NavigateToHomeScreen){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainScreen()));
+            }
+            if(state is NavigateToLoginScreen){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
             }
           },
         child:Center(

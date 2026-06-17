@@ -1,20 +1,24 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/features/home_page/bloc/home_state.dart';
 import 'package:shopping_app/features/home_page/model/product_model.dart';
 import 'package:shopping_app/features/home_page/screens/product_screen.dart';
-
-import '../../../core/themes/light_theme.dart';
+import '../../../core/helpers/cached_network_image.dart';
+import '../../../core/themes/app_theme.dart';
+import '../../../core/themes/theme_bloc/theme_bloc.dart';
+import '../../cart_and_order/bloc/cart_bloc.dart';
+import '../../cart_and_order/bloc/cart_event.dart';
+import '../../cart_and_order/bloc/cart_state.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 
 class ProductCard extends StatelessWidget{
   final ProductModel product;
-  final HomeState state;
-  const ProductCard({super.key,required this.product,required this.state});
+  const ProductCard({super.key,required this.product});
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
+    return BlocBuilder<CartBloc, CartState>(
+  builder: (context, state) {
     return InkWell(
       onTap: (){
         context.read<HomeBloc>().add(LoadProductDataEvent(id: product.id));
@@ -30,7 +34,7 @@ class ProductCard extends StatelessWidget{
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
                       color:
-                      LightTheme.primaryCardBackgroundColor,
+                      theme.primaryCardBackgroundColor,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
@@ -42,41 +46,32 @@ class ProductCard extends StatelessWidget{
                           height: width,
                           decoration: BoxDecoration(
                             color:
-                            LightTheme.primaryBackgroundColor,
+                            theme.primaryBackgroundColor,
                             borderRadius: BorderRadius.circular(
                               10,
                             ),
                           ),
                           child: product.images == null
-                              ? Icon(Icons.broken_image,size: 30,color: LightTheme.primaryCardBackgroundColor,)
-                              :CachedNetworkImage(
-                              imageUrl: product.images![0],
-                            placeholder: (context,url){
-                              return Icon(Icons.broken_image,size: 30,color: LightTheme.primaryCardBackgroundColor,);
-                            },
-                            errorWidget: (context,url,error){
-                              return Icon(Icons.broken_image,size: 30,color: LightTheme.primaryCardBackgroundColor,);
-                            },
-                          )
-                          // Image.network(product.images![0]),
+                              ? Icon(Icons.broken_image,size: 30,color: theme.primaryCardBackgroundColor,)
+                              :MyCachedNetworkImage(imageUrl: product.images![0]),
                         ),
                         SizedBox(height: width * 0.02),
                         Text(
                           product.title ?? "Product Name",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          style: LightTheme.cardProductNameStyle,
+                          style: theme.cardProductNameStyle,
                         ),
                         Text(
                           product.brand ?? "",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          style: LightTheme.cardCompanyNameStyle,
+                          style: theme.cardCompanyNameStyle,
                         ),
                         Spacer(),
                         Text(
                           "\$${product.price ?? "----"}",
-                          style: LightTheme.cardPriceStyle,
+                          style: theme.cardPriceStyle,
                         ),
                       ],
                     ),
@@ -91,7 +86,7 @@ class ProductCard extends StatelessWidget{
                     // height: width * 0.075,
                     decoration: BoxDecoration(
                       color:
-                      LightTheme.primaryCardOnBackgroundColor,
+                      theme.primaryCardOnBackgroundColor,
                       borderRadius: BorderRadius.only(
                         bottomRight: Radius.circular(16),
                         topLeft: Radius.circular(10),
@@ -106,7 +101,7 @@ class ProductCard extends StatelessWidget{
                           children: [
                             InkWell(
                               onTap: () {
-                                context.read<HomeBloc>().add(
+                                context.read<CartBloc>().add(
                                   ChangeProductCartCountEvent(
                                     id: product.id,
                                     desc: true,
@@ -115,7 +110,7 @@ class ProductCard extends StatelessWidget{
                               },
                               child: Icon(
                                 Icons.remove,
-                                color: LightTheme
+                                color: theme
                                     .primaryCardBackgroundColor,
                                 size: 23,
                               ),
@@ -131,7 +126,7 @@ class ProductCard extends StatelessWidget{
                                     .id]
                                     .toString(),
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: theme.primaryBackgroundColor,
                                   fontWeight: FontWeight(
                                     800,
                                   ),
@@ -143,7 +138,7 @@ class ProductCard extends StatelessWidget{
                             : SizedBox(),
                         InkWell(
                           onTap: () {
-                            context.read<HomeBloc>().add(
+                            context.read<CartBloc>().add(
                               ChangeProductCartCountEvent(
                                 id: product.id,
                               ),
@@ -151,7 +146,7 @@ class ProductCard extends StatelessWidget{
                           },
                           child: Icon(
                             Icons.add,
-                            color: LightTheme
+                            color: theme
                                 .primaryCardBackgroundColor,
                             size: 23,
                           ),
@@ -167,14 +162,14 @@ class ProductCard extends StatelessWidget{
                 child: Container(
                   padding: EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: LightTheme.discountCardBackgroundColor,
+                    color: theme.discountCardBackgroundColor,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     product.discountPercentage == null
                         ? ""
                         : "${product.discountPercentage}%",
-                    style: LightTheme.cardDiscountStyle,
+                    style: theme.cardDiscountStyle,
                   ),
                 ),
               ),
@@ -183,7 +178,7 @@ class ProductCard extends StatelessWidget{
                 top: 7 + width * 0.01,
                 child: InkWell(
                   onTap: () {
-                    context.read<HomeBloc>().add(
+                    context.read<CartBloc>().add(
                       ToggleFavoriteIDEvent(id: product.id),
                     );
                   },
@@ -191,7 +186,7 @@ class ProductCard extends StatelessWidget{
                     padding: EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       color:
-                      LightTheme.primaryCardBackgroundColor,
+                      theme.primaryCardBackgroundColor,
                       shape: BoxShape.circle,
                     ),
                     child:
@@ -202,7 +197,7 @@ class ProductCard extends StatelessWidget{
                       size: 20,
                       color: Colors.red,
                     )
-                        : Icon(Icons.favorite_outline, size: 20),
+                        : Icon(Icons.favorite_outline, size: 20,color: theme.primaryCardOnBackgroundColor,),
                   ),
                 ),
               ),
@@ -211,5 +206,7 @@ class ProductCard extends StatelessWidget{
         }
       ),
     );
+  },
+);
   }
 }

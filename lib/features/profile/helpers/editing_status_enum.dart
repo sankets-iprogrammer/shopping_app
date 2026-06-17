@@ -4,3 +4,10 @@ enum EditingStatus{
   error,
   success,
 }
+
+enum LoadingStatus{
+  ready,
+  loading,
+  success,
+  error
+}

@@ -69,4 +69,21 @@ class ApiCalls {
     return ProductModel.fromJson(response.data as Map<String, dynamic>);
   }
 
+  static Future<List<ProductModel>> getCategoryProductsList({
+    required int skip,
+    required String category
+  }) async {
+    final response = await apiClient.dio.get(
+      ApiBaseUrl.baseUrl + ApiEndPoints.getCategoryProduct+category,
+      queryParameters: {
+        'limit': 10,
+        'skip': skip,
+        'select': ',id,title,price,brand,images,discountPercentage',
+      },
+    );
+    return (response.data["products"] as List).map((product) {
+      return ProductModel.fromJson(product as Map<String, dynamic>);
+    }).toList();
+  }
+
 }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shopping_app/core/helpers/global_navigator.dart';
-import 'package:shopping_app/core/themes/light_theme.dart';
 
 Future<void> showOverlayAnimation(BuildContext context,{String? assetsAddress,String? networkUrl,Duration? duration})async{
   if(assetsAddress==null && networkUrl ==null)return;
