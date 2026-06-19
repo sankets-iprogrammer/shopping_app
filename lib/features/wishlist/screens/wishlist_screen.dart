@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/widgets/custom_appbar.dart';
 import 'package:shopping_app/features/home_page/bloc/home_bloc.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
+import 'package:shopping_app/features/main_screen/bloc/main_screen_events.dart';
 import '../../../core/themes/app_theme.dart';
 import '../../../core/themes/theme_bloc/theme_bloc.dart';
 import '../../cart_and_order/bloc/cart_bloc.dart';
 import '../../cart_and_order/bloc/cart_state.dart';
 import '../../home_page/components/product_card.dart';
 import '../../home_page/model/product_model.dart';
+import '../../main_screen/bloc/main_screen_bloc.dart';
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
@@ -43,13 +45,18 @@ class WishlistScreen extends StatelessWidget {
                               spacing: 10,
                               children: [
                                 Text("Wishlist is Empty",style: theme.productDesc),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                                  decoration: BoxDecoration(
-                                    color: theme.primaryCardBackgroundColor,
-                                    borderRadius: BorderRadius.circular(10),
+                                InkWell(
+                                  onTap: (){
+                                    context.read<MainScreenBloc>().add(SetPageIndexEvent(index: 0));
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: theme.primaryCardBackgroundColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text("Continue Shopping",style: theme.cardProductNameStyle,),
                                   ),
-                                  child: Text("Continue Shopping",style: theme.cardProductNameStyle,),
                                 )
                               ],
                             ),

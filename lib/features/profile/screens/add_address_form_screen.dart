@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shopping_app/core/helpers/custom_snackbar.dart';
 import 'package:shopping_app/core/helpers/overlay_widgets.dart';
 import 'package:shopping_app/core/helpers/u_uid_generator.dart';

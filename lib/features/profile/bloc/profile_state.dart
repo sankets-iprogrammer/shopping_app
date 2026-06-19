@@ -70,9 +70,8 @@ class ProfileState {
         isProfileLoading: false,
         userData: null,
         addresses: [
-      AddressModel(id: "a", name: "abcd", number: 3475455, street: "dscdcnd", postalCode: 415502, city: "pune", state: "maharashtra", country: "india"),
-      AddressModel(id: "b", name: "efgh", number: 3475455, street: "dscdcnd odsjfdsid sdodsdsc dsoifdsds odisj", postalCode: 415502, city: "pune", state: "maharashtra", country: "india"),
-      AddressModel(id: "c", name: "ijkl", number: 3475455, street: "dscdcnd", postalCode: 415502, city: "pune", state: "maharashtra", country: "india"),
+      AddressModel(id: "a", name: "Home", number: 9876543210, street: "42, Rose Garden Street, Bandra West", postalCode: 400050, city: "Mumbai", state: "Maharashtra", country: "India"),
+      AddressModel(id: "b", name: "Office", number:  9123456789, street: "7th Floor, Tech Park, Andheri East", postalCode: 400069, city: "Mumbai", state: "Maharashtra", country: "India"),
     ]);
   }
 }

@@ -7,6 +7,8 @@ import 'package:shopping_app/features/cart_and_order/bloc/cart_state.dart';
 import 'package:shopping_app/features/profile/helpers/editing_status_enum.dart';
 import 'package:shopping_app/features/profile/models/order_model.dart';
 
+import '../../../core/helpers/debounce_transformer.dart';
+
 class CartBloc extends Bloc<CartEvent,CartState>{
   CartBloc():super(CartState.initial()){
     on<SetSelectedAddressEvent>(_setSelectedAddress);
@@ -58,5 +60,6 @@ class CartBloc extends Bloc<CartEvent,CartState>{
     emit(state.copyWith(productCartCount: productCartCount));
 
   }
+
 
 }

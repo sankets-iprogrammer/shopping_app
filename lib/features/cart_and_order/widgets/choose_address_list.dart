@@ -29,7 +29,7 @@ class ChooseAddressList extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Select address",style: theme.pageTitle,),
+                Text("Select Address",style: theme.pageTitle,),
                 SizedBox(height: 10,),
                 ListView.builder(
                   shrinkWrap: true,

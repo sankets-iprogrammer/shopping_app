@@ -17,23 +17,23 @@ class CustomShimmer {
     BoxShape shape = BoxShape.rectangle,
     double? borderRadius,
   }) {
-    return Shimmer.fromColors(
-      period: Duration(seconds: 2),
-      baseColor: baseColor,
-      highlightColor: highlightColor,
-      child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          borderRadius: shape == BoxShape.rectangle
-              ? BorderRadius.circular(borderRadius??0)
-              : null,
-          shape: shape,
-          color: baseColor,
-        ),
+      return Shimmer.fromColors(
+        period: Duration(seconds: 2),
+        baseColor: baseColor,
+        highlightColor: highlightColor,
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: shape == BoxShape.rectangle
+                ? BorderRadius.circular(borderRadius??0)
+                : null,
+            shape: shape,
+            color: baseColor,
+          ),
 
-      ),
-    );
+        ),
+      );
   }
 
   static Widget getShimmerProductCard(){

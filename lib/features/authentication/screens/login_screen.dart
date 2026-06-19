@@ -158,14 +158,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         theme: theme,
                         text: "Create Account",
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return RegisterScreen();
-                              },
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) {
+                          //       return RegisterScreen();
+                          //     },
+                          //   ),
+                          // );
                         },
                       ),
                     ],

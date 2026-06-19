@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'dart:developer';
 
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,10 +8,12 @@ import 'package:shopping_app/core/widgets/search_bar.dart';
 import 'package:shopping_app/features/home_page/bloc/home_event.dart';
 import 'package:shopping_app/features/home_page/bloc/home_state.dart';
 import 'package:shopping_app/features/home_page/components/product_card.dart';
+import 'package:shopping_app/features/main_screen/bloc/main_screen_bloc.dart';
+import 'package:shopping_app/features/main_screen/bloc/main_screen_events.dart';
+import 'package:shopping_app/features/profile/helpers/editing_status_enum.dart';
 import '../../../core/themes/app_theme.dart';
 import '../../../core/themes/theme_bloc/theme_bloc.dart';
 import '../../../core/widgets/buttons.dart';
-import '../../get_started/model/on_boarding_content.dart';
 import '../../store/bloc/store_bloc.dart';
 import '../../store/bloc/store_event.dart';
 import '../bloc/home_bloc.dart';
@@ -29,31 +27,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  FocusNode searchFocusNode = FocusNode();
+  // FocusNode searchFocusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
   CarouselSliderController carouselController = CarouselSliderController();
-  List<OnBoardingContent> contents = [
-    OnBoardingContent(
-      title: "Welcome to UP Store",
-      desc: "Your one-stop destination for effortless and enjoyable shopping",
-      image: Image.asset('assets/offers/offer_1.jpg', fit: BoxFit.fill),
-    ),
-    OnBoardingContent(
-      title: "Shop Everything You Love!",
-      desc:
-          "Discover top-quality products at the best prices with a seamless shopping experience",
-      image: Image.asset(
-        'assets/offers/offer_2.jpeg',
-        fit: BoxFit.fill,
-      ),
-    ),
-    OnBoardingContent(
-      title: "Fast & Reliable Delivery!",
-      desc:
-          "Get your favorite items delivered to your doorstep, anytime, anywhere",
-      image: Image.asset('assets/offers/offer_3.jpeg',fit: BoxFit.fill),
-    ),
+  FocusNode searchFocusNode=FocusNode();
+  List<String> contents = [
+    'assets/offers/offer_1.jpg',
+    'assets/offers/offer_2.jpeg',
+    'assets/offers/offer_3.jpeg'
   ];
+
   int currentIndex = 0;
   final ScrollController _scrollController =ScrollController();
 
@@ -74,8 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    searchFocusNode.dispose();
     searchController.dispose();
+    searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -203,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  state.isCategoryListLoading
+                                                  context.watch<StoreBloc>().state.categoriesLoadingStatus==LoadingStatus.loading
                                                       ? CustomShimmer.getShimmerContainer(
                                                       height: 55,
                                                       width: 55,
@@ -212,22 +195,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       highlightColor: Color(0xFFD4D4D2),
                                                       shape: BoxShape.circle
                                                   ) :
-                                                  Container(
-                                                    height: 55,
-                                                    width: 55,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color: theme
-                                                          .primaryBackgroundColor,
-                                                    ),
-                                                    child: Image.asset(
-                                                      "assets/category_icons/sports.png",
+                                                  InkWell(
+                                                    onTap: (){
+                                                      context.read<StoreBloc>().add(GetCategoryProductsEvent(category: categories[index]));
+                                                      context.read<MainScreenBloc>().add(SetPageIndexEvent(index: 1));
+                                                    },
+                                                    child: Container(
+                                                      height: 55,
+                                                      width: 55,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: theme
+                                                            .primaryBackgroundColor,
+                                                      ),
+                                                      child: Image.asset(
+                                                        "assets/category_icons/sports.png",
+                                                      ),
                                                     ),
                                                   ),
-                                                  Text(
-                                                    state.isCategoryListLoading?"category":categories[index],
-                                                    style: theme
-                                                        .categoryCardTitleStyle,
+                                                  SizedBox(
+                                                    width: 70,
+                                                    child: Text(
+                                                      overflow: TextOverflow.ellipsis,
+                                                      categories[index],
+                                                      style: theme
+                                                          .categoryCardTitleStyle,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -248,7 +241,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .of(context)
                               .size
                               .width,
-                          child: MySearchBar(onChanged: (value) {
+                          child: MySearchBar(
+                            searchFocusNode: searchFocusNode,
+                              onChanged: (value) {
                             if (value
                                 .trim()
                                 .isEmpty) return;
@@ -299,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              child: content.image,
+                              child: Image.asset(content,fit: BoxFit.fill),
                             );
                           }).toList(),
                           options: CarouselOptions(

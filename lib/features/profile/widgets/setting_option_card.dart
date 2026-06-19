@@ -25,17 +25,22 @@ class SettingOptionCard extends StatelessWidget {
             color: theme.secondaryBackgroundColor,
             size: 30,
           ),
-          Column(
-            spacing: 3,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(tittle,
-                  style:theme.sectionTitle
-              ),
-              Text(description,
-                  style:theme.cardCompanyNameStyle
-              )
-            ],
+          Expanded(
+            child: Column(
+              spacing: 3,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tittle,
+                    style:theme.sectionTitle
+                ),
+                Text(
+                  overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    description,
+                    style:theme.cardCompanyNameStyle
+                )
+              ],
+            ),
           )
         ],
       ),

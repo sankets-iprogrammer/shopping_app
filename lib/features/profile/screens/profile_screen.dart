@@ -28,92 +28,94 @@ class ProfileScreen extends StatelessWidget {
     final AppTheme theme =context.watch<ThemeBloc>().state.currentTheme;
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        return Column(
-          children: [
-            CustomAppbar.featureAppbar("My Profile",theme: theme, context: context),
-            SizedBox(height: 40,),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: theme.pageHorizontalMargin),
-              child: Column(
-                spacing: 30,
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(5),
-                      height: 125,
-                      width: 125,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: theme.secondaryBackgroundColor, width: 5),
-                      ),
-                      child: state.isProfileLoading?CircularProgressIndicator():
-                          MyCachedNetworkImage(imageUrl: state.userData?.image??""),
-                  ),
-
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Unknown Pro",style: theme.sectionTitle,),
-                          Text("unknownpro@gmail.com",style: theme.productDesc)
-                        ],
-                      ),
-                      Spacer(),
-                      InkWell(
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomAppbar.featureAppbar("My Profile",theme: theme, context: context),
+              SizedBox(height: 40,),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: theme.pageHorizontalMargin),
+                child: Column(
+                  spacing: 30,
+                  children: [
+                    Container(
+                        padding: EdgeInsets.all(5),
+                        height: 125,
+                        width: 125,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: theme.secondaryBackgroundColor, width: 5),
+                        ),
+                        child: state.isProfileLoading?CircularProgressIndicator():
+                            MyCachedNetworkImage(imageUrl: state.userData?.image??""),
+                    ),
+          
+                    Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Unknown Pro",style: theme.sectionTitle,),
+                            Text("unknownpro@gmail.com",style: theme.productDesc)
+                          ],
+                        ),
+                        Spacer(),
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfileScreen()));
+                          },
+                            child: Icon(Icons.edit_outlined,size: 25,color: theme.primaryOnBackgroundColor,))
+                      ],
+                    ),
+          
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 30,
+                      children: [
+                        Text("Account Settings",style: theme.pageTitle.copyWith(fontSize: 20)),
+                        SettingOptionCard(iconsData: Icons.house_outlined,tittle: "My Addresses",description: "Set shopping delivery addresses",
+                          onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddressListScreen()));
+                        },),
+                        SettingOptionCard(iconsData: Icons.shopping_cart_outlined,tittle: "My Cart",description: "Add, remove products and move to checkout",
+                          onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>CartScreen()));
+                          },
+                        ),
+                        SettingOptionCard(iconsData: Icons.receipt_outlined,tittle: "My Orders",description: "Set shopping delivery addresses",
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfileScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderListScreen()));
                         },
-                          child: Icon(Icons.edit_outlined,size: 25,color: theme.primaryOnBackgroundColor,))
-                    ],
-                  ),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 30,
-                    children: [
-                      Text("Account Settings",style: theme.pageTitle.copyWith(fontSize: 20)),
-                      SettingOptionCard(iconsData: Icons.house_outlined,tittle: "My Addresses",description: "Set shopping delivery addresses",
-                        onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>AddressListScreen()));
-                      },),
-                      SettingOptionCard(iconsData: Icons.shopping_cart_outlined,tittle: "My Cart",description: "Add, remove products and move to checkout",
-                        onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>CartScreen()));
-                        },
-                      ),
-                      SettingOptionCard(iconsData: Icons.receipt_outlined,tittle: "My Orders",description: "Set shopping delivery addresses",
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderListScreen()));
-                      },
-                      ),
-                      SettingOptionCard(iconsData: Icons.dark_mode_outlined,tittle: "Themes",description: "Set shopping delivery addresses",
-                        onTap: (){
-                          showModalBottomSheet(
-                            backgroundColor: theme.primaryBackgroundColor,
-                              context: context,
-                              builder: (context){
-                                return SelectTheme();
-                              });
-                        },
-                      ),
-                    ],
-                  ),
-                  MyButton.secondaryButton(theme: theme, text: "Logout", onTap: ()async{
-                    if(await CustomDialog.showConfirmationDialog(
-                      context,message: "Are you sure you want to log out?",
-                      cancelEnabled: true
-                    )){
-                      context.read<MainScreenBloc>().add(SetPageIndexEvent(index: 0));
-                      CommonFunctions.logout();
-                    }
-
-                  })
-                ],
-              ),
-            )
-          ],
+                        ),
+                        SettingOptionCard(iconsData: Icons.dark_mode_outlined,tittle: "Themes",description: "Set shopping delivery addresses",
+                          onTap: (){
+                            showModalBottomSheet(
+                              backgroundColor: theme.primaryBackgroundColor,
+                                context: context,
+                                builder: (context){
+                                  return SelectTheme();
+                                });
+                          },
+                        ),
+                      ],
+                    ),
+                    MyButton.secondaryButton(theme: theme, text: "Logout", onTap: ()async{
+                      if(await CustomDialog.showConfirmationDialog(
+                        context,message: "Are you sure you want to log out?",
+                        cancelEnabled: true
+                      )){
+                        context.read<MainScreenBloc>().add(SetPageIndexEvent(index: 0));
+                        CommonFunctions.logout();
+                      }
+          
+                    })
+                  ],
+                ),
+              )
+            ],
+          ),
         );
       },
     );

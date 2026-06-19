@@ -7,4 +7,8 @@ class GetCategoryProductsEvent extends StoreEvent{
   GetCategoryProductsEvent({required this.category});
 }
 
+class SearchStoreProductEvent extends StoreEvent{
+  String searchText;
+  SearchStoreProductEvent({required this.searchText});
+}
 

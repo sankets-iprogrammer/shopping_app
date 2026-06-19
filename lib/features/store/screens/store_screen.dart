@@ -20,6 +20,7 @@ class StoreScreen extends StatefulWidget {
 
 class _StoreScreenState extends State<StoreScreen> {
   TextEditingController searchController = TextEditingController();
+  FocusNode searchFocusNode=FocusNode();
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeBloc>().state.currentTheme;
@@ -33,7 +34,28 @@ class _StoreScreenState extends State<StoreScreen> {
         children: [
           CustomAppbar.featureAppbar("Store", context: context, theme: theme),
           SizedBox(height: 30,),
-          MySearchBar(onChanged: (value){}, onSubmitted: (value){}, onClear: (){}, controller: searchController),
+          MySearchBar(
+            searchFocusNode: searchFocusNode,
+              onChanged: (value) {
+                if (value
+                    .trim()
+                    .isEmpty) return;
+                context.read<StoreBloc>().add(SearchStoreProductEvent(
+                    searchText: value.trim().toLowerCase()));
+              },
+              onSubmitted: (value) {
+                if (value
+                    .trim()
+                    .isEmpty) return;
+                context.read<StoreBloc>().add(SearchStoreProductEvent(
+                    searchText: value.trim().toLowerCase()));
+              },
+              onClear: () {
+                context.read<StoreBloc>().add(
+                    SearchStoreProductEvent(searchText: ""));
+                searchController.clear();
+              },
+              controller: searchController),
           SizedBox(height: 20,),
           SizedBox(
             width: MediaQuery.widthOf(context),
@@ -42,7 +64,6 @@ class _StoreScreenState extends State<StoreScreen> {
                 scrollDirection: Axis.horizontal,
                 itemCount: state.categories.length,
                 itemBuilder: (context, index) {
-
                   return InkWell(
                     onTap: (){
                       context.read<StoreBloc>().add(GetCategoryProductsEvent(category: state.categories[index]));
@@ -69,7 +90,7 @@ class _StoreScreenState extends State<StoreScreen> {
               padding: EdgeInsets.all(0),
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: state.categoryProducts.length+(state.categoriesLoadingStatus==LoadingStatus.loading?4:0),
+              itemCount:state.categoryProductsLoadingStatus==LoadingStatus.loading?4:state.filteredProducts.length,
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 childAspectRatio: 0.68,
                 mainAxisSpacing: 10,
@@ -77,10 +98,10 @@ class _StoreScreenState extends State<StoreScreen> {
                 maxCrossAxisExtent: 300,
               ),
               itemBuilder: (context, index) {
-                if(index>=state.categoryProducts.length){
+                if(state.categoryProductsLoadingStatus==LoadingStatus.loading){
                   return CustomShimmer.getShimmerProductCard();
                 }
-                final ProductModel product = state.categoryProducts[index];
+                final ProductModel product = state.filteredProducts[index];
                 return ProductCard(product: product);
               },
             ),

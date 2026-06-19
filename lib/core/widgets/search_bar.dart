@@ -9,11 +9,11 @@ class MySearchBar extends StatelessWidget {
   final void Function(String)? onSubmitted;
   final Function onClear;
   final TextEditingController controller;
-  const MySearchBar({super.key,required this.onChanged,required this.onSubmitted,required this.onClear,required this.controller});
+  final FocusNode searchFocusNode;
+  const MySearchBar({super.key,required this.searchFocusNode, required this.onChanged,required this.onSubmitted,required this.onClear,required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    FocusNode searchFocusNode =FocusNode();
     AppTheme theme = context.watch<ThemeBloc>().state.currentTheme;
     return Container(
       margin: EdgeInsets.symmetric(

@@ -61,75 +61,75 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: theme.pageHorizontalMargin,
-            vertical: theme.pageVerticalMargin,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: (){},
-                    child: Text(
-                      "Skip",
-                      style: theme.textStyle.copyWith(
-                        color: theme.navigationTextColor,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: theme.pageHorizontalMargin,
+              vertical: theme.pageVerticalMargin,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: (){},
+                      child: Text(
+                        "Skip",
+                        style: theme.textStyle.copyWith(
+                          color: theme.navigationTextColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
+                  ],
+                ),
+                // Spacer(),
+                SizedBox(
+                  // height: 300,
+                  // width: 400,
+                  child: CarouselSlider(
+                    carouselController: carouselController,
+                    items: contents.map((content) {
+                      return content.image;
+                    }).toList(),
+                    options: CarouselOptions(
+                      enableInfiniteScroll: false,
+                      height: 400,
+                      viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentIndex = index;
+                        });
+                      },
+                    ),
                   ),
-                ],
-              ),
-              // Spacer(),
-              SizedBox(
-                // height: 300,
-                // width: 400,
-                child: CarouselSlider(
-                  carouselController: carouselController,
-                  items: contents.map((content) {
-                    return content.image;
-                  }).toList(),
-                  options: CarouselOptions(
-                    enableInfiniteScroll: false,
-                    height: 400,
-                    viewportFraction: 1,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        currentIndex = index;
-                      });
-                    },
+                ),
+
+                Text(
+                  contents[currentIndex].title,
+                  style: theme.textStyle.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ),
-        
-              Text(
-                contents[currentIndex].title,
-                style: theme.textStyle.copyWith(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
+                Text(
+                  contents[currentIndex].desc,
+                  style: theme.textStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              Text(
-                contents[currentIndex].desc,
-                style: theme.textStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 40,),
-              MyButton.carouselNavigators(height: 6, width: 140, activeIndex: currentIndex,count:  3 ,theme: theme),
-              Spacer(),
-              MyButton.primaryButton(text: currentIndex==contents.length-1?"Continue": "Next",onTap:handleNext,theme: theme),
-            ],
+                SizedBox(height: 40,),
+                MyButton.carouselNavigators(height: 6, width: 140, activeIndex: currentIndex,count:  3 ,theme: theme),
+                Spacer(),
+                MyButton.primaryButton(text: currentIndex==contents.length-1?"Continue": "Next",onTap:handleNext,theme: theme),
+              ],
+            ),
           ),
-        ),
       ),
     );
   }

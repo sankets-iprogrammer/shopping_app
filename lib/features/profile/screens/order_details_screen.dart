@@ -68,7 +68,6 @@ class OrderDetailsScreen extends StatelessWidget {
                       margin: EdgeInsets.zero,
                       physics: NeverScrollableScrollPhysics(),
                       connectorThickness: 2,
-                      // connectorColor:WidgetStatePropertyAll(true? theme.secondaryBackgroundColor: Colors.grey),
                       currentStep: order.orderStatusIndex,
                       controlsBuilder: (context,details){
                         return SizedBox.shrink();
@@ -77,7 +76,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         Step(title: Text("Order Placed",style: theme.sectionTitle,),
                             content: Row(
                               children: [
-                                Text("Your order has been placed successfully.",style: theme.productDesc),
+                                Expanded(child: Text("Your order has been placed successfully.",style: theme.productDesc)),
                               ],
                             ),
                             isActive: true
@@ -85,32 +84,34 @@ class OrderDetailsScreen extends StatelessWidget {
                         Step(title: Text("Order Confirmed",style: theme.sectionTitle),
                             content: Row(
                               children: [
-                                Text(
-                                    "We're confirming your order with the seller.",style: theme.productDesc),
+                                Expanded(
+                                  child: Text(
+                                      "We're confirming your order with the seller.",style: theme.productDesc),
+                                ),
                               ],
                             )),
                         Step(title: Text("Processing",style: theme.sectionTitle),
                             content: Row(
                               children: [
-                                Text("Your order is currently being prepared.",style: theme.productDesc),
+                                Expanded(child: Text("Your order is currently being prepared.",style: theme.productDesc)),
                               ],
                             )),
                         Step(title: Text("Packed",style: theme.sectionTitle),
                             content: Row(
                               children: [
-                                Text("Your items are being packed for shipment.",style: theme.productDesc),
+                                Expanded(child: Text("Your items are being packed for shipment.",style: theme.productDesc)),
                               ],
                             )),
                         Step(title: Text("Shipped",style: theme.sectionTitle),
                             content: Row(
                               children: [
-                                Text("We're handing your package to our delivery partner.",style: theme.productDesc),
+                                Expanded(child: Text("We're handing your package to our delivery partner.",style: theme.productDesc)),
                               ],
                             )),
                         Step(title: Text("Out for Delivery",style: theme.sectionTitle),
                             content: Row(
                               children: [
-                                Text("Your order is with the delivery agent and will arrive soon.",style: theme.productDesc),
+                                Expanded(child: Text("Your order is with the delivery agent and will arrive soon.",style: theme.productDesc)),
                               ],
                             )),
 

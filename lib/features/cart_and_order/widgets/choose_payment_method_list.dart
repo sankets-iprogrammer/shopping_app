@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/features/cart_and_order/bloc/cart_bloc.dart';
@@ -16,40 +15,51 @@ import '../../../core/themes/theme_bloc/theme_bloc.dart';
 
 class ChoosePaymentMethodList extends StatelessWidget {
   const ChoosePaymentMethodList({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final AppTheme theme =context.read<ThemeBloc>().state.currentTheme;
-    return BlocBuilder<CartBloc,CartState>(
-        builder: (context,state) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Select Payment Option",style: theme.pageTitle,),
-                  SizedBox(height: 10,),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: state.paymentMethods.length,
-                      itemBuilder: (context,index){
-                        return InkWell(
-                          onTap: (){
-                            context.read<CartBloc>().add(SetSelectedPaymentMethodEvent(selectedPaymentMethod: state.paymentMethods[index]));
-                            Navigator.pop(context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: PaymentMethodCard(paymentMethod: state.paymentMethods[index],isSelected : state.selectedPaymentMethod?.id==state.paymentMethods[index].id)
+    final AppTheme theme = context.read<ThemeBloc>().state.currentTheme;
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Select Payment Option", style: theme.pageTitle),
+                SizedBox(height: 10),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: state.paymentMethods.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        context.read<CartBloc>().add(
+                          SetSelectedPaymentMethodEvent(
+                            selectedPaymentMethod: state.paymentMethods[index],
                           ),
                         );
-                      })
-                ],
-              ),
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: PaymentMethodCard(
+                          paymentMethod: state.paymentMethods[index],
+                          isSelected:
+                              state.selectedPaymentMethod?.id ==
+                              state.paymentMethods[index].id,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          );
-        }
+          ),
+        );
+      },
     );
   }
 }
