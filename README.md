@@ -59,27 +59,42 @@ The application uses the following configuration:
 
 ## Screenshots
 
-<img src="assets/screenshots/Screenshot_2026-06-19-14-35-10-85_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-35-07-00_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-56-79_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-52-32_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-40-43_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-37-62_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-28-75_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-25-32_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-19-43_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-10-82_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-34-03-26_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-59-85_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-40-75_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-30-59_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-26-46_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-22-64_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-18-82_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-10-91_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-33-03-02_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
-<img src="assets/screenshots/Screenshot_2026-06-19-14-32-38-85_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+
 <img src="assets/screenshots/Screenshot_2026-06-19-14-32-11-20_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-32-38-85_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-03-02_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-10-91_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-35-07-00_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-35-10-85_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-18-82_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-22-64_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-26-46_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-30-59_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-40-75_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-33-59-85_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-03-26_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-03-26_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-19-43_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-25-32_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-28-75_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-37-62_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-40-43_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-52-32_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+<img src="assets/screenshots/Screenshot_2026-06-19-14-34-56-79_2c8fa34c014cc648df222e10f8e30d5d.jpg" width="300" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ---
